@@ -48,12 +48,13 @@ Este alcance se considera cerrado para el MVP y no incluye
 integraciones externas ni funcionalidades sociales.
 
 ## 🛠️ Stack
-- **Frontend:** Angular
-- **Mobile:** Ionic
+- **Frontend:** Vue.js 3 (Composition API)
+- **Mobile/PWA:** Quasar Framework
 
-Se eligió este stack para priorizar velocidad de desarrollo,
-portabilidad multiplataforma y facilidad de mantenimiento,
-permitiendo validar el producto rápidamente.
+Se eligió este stack por la velocidad de desarrollo que ofrece Quasar,
+su excelente ecosistema de componentes, y Vue 3 por su curva de aprendizaje
+suave y reactividad moderna. Además, Quasar permite generar apps
+multiplataforma (web, mobile, desktop) desde una sola base de código.
 
 ## 📚 Documentación
 Toda la documentación detallada del proyecto se encuentra en la carpeta `/docs`.
