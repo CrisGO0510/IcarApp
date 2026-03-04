@@ -2,11 +2,8 @@
 
 ## 🎯 Objetivo del Documento
 Definir los flujos principales de interacción del usuario dentro del MVP
-de IcarApp, asegurando una experiencia simple, flexible y coherente con
-la visión del producto.
-
-Los flujos describen el recorrido lógico del usuario, independientemente
-de la implementación visual o técnica.
+de IcarApp, considerando un modelo de uso local sin autenticación,
+priorizando la sencillez, la versatilidad y el acceso inmediato.
 
 ---
 
@@ -15,14 +12,16 @@ de la implementación visual o técnica.
 
 ---
 
-## 🔐 Flujo 1: Inicio de la Aplicación
+## 🚀 Flujo 1: Inicio de la Aplicación
 
 ### Descripción
-Permite al usuario acceder a la aplicación y a su información personal.
+Permite al usuario acceder directamente a la aplicación sin procesos
+de registro o autenticación.
 
 ### Flujo
 Inicio de la aplicación  
-→ Dashboard principal
+→ Carga de datos locales  
+→ Dashboard principal  
 
 ---
 
@@ -30,11 +29,11 @@ Inicio de la aplicación
 
 ### Descripción
 Punto central de la aplicación desde donde el usuario accede a
-entrenamiento y nutrición, y visualiza un resumen general.
+entrenamiento y nutrición, y visualiza un resumen general del día.
 
 ### Flujo
 Dashboard  
-→ Resumen del día (entrenamiento y nutrición)  
+→ Resumen diario (entrenamiento y nutrición)  
 → Acceso a módulo de entrenamiento  
 → Acceso a módulo de nutrición  
 
@@ -43,7 +42,8 @@ Dashboard
 ## 🏋️ Flujo 3: Gestión de Entrenamientos
 
 ### Descripción
-Permite al usuario registrar, consultar y modificar su entrenamiento.
+Permite al usuario registrar, consultar y modificar su entrenamiento
+de forma completamente local.
 
 ### Flujo
 Dashboard  
@@ -53,7 +53,7 @@ Dashboard
 → Ver ejercicios del día  
 → Registrar series y repeticiones  
 → Guardar entrenamiento  
-→ Visualizar progreso
+→ Visualizar progreso  
 
 ---
 
@@ -90,7 +90,8 @@ Rutina activa
 ## ⏱️ Flujo 6: Uso del Contador de Tiempo
 
 ### Descripción
-Permite al usuario controlar tiempos de descanso o ejecución.
+Permite al usuario controlar tiempos de descanso o ejecución durante
+el entrenamiento.
 
 ### Flujo
 Rutina activa  
@@ -104,7 +105,8 @@ Rutina activa
 ## 📊 Flujo 7: Visualización de Progreso de Entrenamiento
 
 ### Descripción
-Visualización del historial y progreso del entrenamiento.
+Visualización del historial y progreso del entrenamiento almacenado
+localmente.
 
 ### Flujo
 Módulo de entrenamiento  
@@ -118,7 +120,7 @@ Módulo de entrenamiento
 ## 🍽️ Flujo 8: Configuración Nutricional
 
 ### Descripción
-Configuración de valores base para cálculos nutricionales.
+Configuración local de valores base para cálculos nutricionales.
 
 ### Flujo
 Dashboard  
@@ -133,7 +135,7 @@ Dashboard
 ## 🥗 Flujo 9: Registro de Comidas
 
 ### Descripción
-Registro flexible de comidas y macronutrientes.
+Registro local y flexible de comidas y macronutrientes.
 
 ### Flujo
 Módulo de nutrición  
@@ -148,7 +150,8 @@ Módulo de nutrición
 ## 📈 Flujo 10: Visualización Nutricional
 
 ### Descripción
-Visualización del consumo diario y comparativa con objetivos.
+Visualización del consumo diario y comparativa con objetivos,
+utilizando datos locales.
 
 ### Flujo
 Módulo de nutrición  
@@ -162,7 +165,8 @@ Módulo de nutrición
 ## ✏️ Flujo 11: Edición Libre de Registros
 
 ### Descripción
-Permite modificar cualquier registro sin restricciones.
+Permite modificar cualquier registro almacenado localmente sin
+restricciones.
 
 ### Flujo
 Cualquier módulo  
@@ -175,17 +179,17 @@ Cualquier módulo
 
 ## 🧠 Consideraciones de Producto
 
-- Todos los flujos deben minimizar la cantidad de pasos
-- No existen validaciones restrictivas innecesarias
-- El usuario siempre puede editar información pasada
-- La visualización del progreso es parte esencial del flujo
+- La aplicación no requiere conexión a internet para funcionar
+- Todos los datos se almacenan localmente
+- El usuario tiene control total sobre su información
+- No existen flujos bloqueantes ni procesos obligatorios
 
 ---
 
 ## ✅ Criterio de Completitud de Flujos
 
 Los flujos se consideran completos cuando:
-- El usuario puede navegar entre módulos sin fricción
+- El usuario puede acceder a la app inmediatamente
 - Puede registrar y editar entrenamientos y nutrición
 - Puede visualizar su progreso de forma clara
-- Puede usar la app sin bloqueos funcionales
+- Puede usar la app completamente offline
