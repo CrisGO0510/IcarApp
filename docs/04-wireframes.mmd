@@ -1,0 +1,95 @@
+---
+config:
+  theme: redux-dark
+---
+erDiagram
+
+    USER_PROFILE {
+        integer id PK
+        string name
+        float default_rest_minutes
+        string weight_unit
+        string height_unit
+        float height
+        float maintenance_calories
+        datetime created_at
+        datetime updated_at
+    }
+
+    WEIGHT_HISTORY {
+        integer id PK
+        float weight
+        datetime recorded_at
+        datetime created_at
+    }
+
+    ROUTINES {
+        integer id PK
+        string name
+        boolean is_active
+        datetime created_at
+        datetime updated_at
+    }
+
+    EXERCISES {
+        integer id PK
+        string name
+        integer rest_time_minutes
+        datetime created_at
+        datetime updated_at
+    }
+
+    ROUTINE_EXERCISES {
+        integer id PK
+        integer routine_id FK
+        integer exercise_id FK
+        integer order_index
+    }
+
+    EXERCISE_LOGS {
+        integer id PK
+        integer exercise_id FK
+        datetime performed_at
+        integer reps
+        string notes
+        datetime created_at
+        datetime updated_at
+    }
+
+    MACRO_GOALS {
+        integer id PK
+        float protein_target
+        float carbs_target
+        float fats_target
+        float kcal_target
+        datetime start_date
+        datetime created_at
+    }
+
+    MEALS {
+        integer id PK
+        string name
+        float quantity
+        string unit
+        float protein
+        float carbs
+        float fats
+        float kcal
+        datetime consumed_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    DAILY_ACTIVITIES {
+        integer id PK
+        string name
+        integer duration_minutes
+        float calories_burned
+        datetime performed_at
+        datetime created_at
+        datetime updated_at
+    }
+
+    ROUTINES ||--o{ ROUTINE_EXERCISES : contains
+    EXERCISES ||--o{ ROUTINE_EXERCISES : assigned_to
+    EXERCISES ||--o{ EXERCISE_LOGS : generates
