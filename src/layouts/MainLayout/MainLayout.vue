@@ -20,11 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { useMainLayout } from './MainLayout';
 
-const leftDrawerOpen = ref(false);
-
-function toggleLeftDrawer() {
-  leftDrawerOpen.value = !leftDrawerOpen.value;
-}
+const { leftDrawerOpen, toggleLeftDrawer } = useMainLayout();
 </script>
