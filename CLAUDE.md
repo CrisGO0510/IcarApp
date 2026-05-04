@@ -20,25 +20,27 @@ No test framework is configured yet.
 ## Architecture (Hexagonal + Repository Pattern)
 
 ```
-Vue Components (src/pages/, src/components/, src/layouts/)
-    ↓
-Pinia Stores (src/modules/*/stores/)
-    ↓
-Services (src/modules/*/services/) — business logic
-    ↓
-Repository Ports (src/modules/*/repositories/*port.ts) — interfaces
-    ↓
-SQLite Adapters (extend BaseRepository from src/core/repositories/)
+Vue SFC (.vue template)
+    ↓ destructures
+Composable (useXxx.ts) — UI state, form handling
+    ↓ calls
+Pinia Store — global reactive state, coordinates use cases
+    ↓ calls
+Use Cases (src/modules/*/use-cases/) — one business operation per function
+    ↓ depends on
+Repository Port (interface) — data access contract
+    ↓ implemented by
+SQLite Adapter (extends BaseRepository) — concrete implementation
     ↓
 SQLiteManager singleton (src/core/database/sqlite.ts)
 ```
 
 **Hexagonal rules:**
-- Services depend on repository **interfaces** (ports), never on SQLite directly
-- `BaseRepository<T>` in `src/core/repositories/` is the SQLite adapter base class
+- Use cases are **functions** (not classes) that receive the repository port as argument — aligns with Composition API style
+- Use cases contain business logic and validations; stores only coordinate them
+- Stores never call repositories directly — always through use cases
+- Components/composables never contain business logic or data access
 - To switch to a cloud backend: implement new adapters satisfying the same port interfaces
-- Components never contain business logic or data access
-- Stores coordinate high-level operations, delegate logic to services
 
 ## Module Organization
 
@@ -48,7 +50,9 @@ Domain modules in `src/modules/`:
 - `profile/` — user profile
 - `activity/` — dashboard summaries (computed, not persisted)
 
-Each module has: `components/`, `entities/`, `pages/`, `repositories/`, `services/`, `stores/`, `types/`
+Each module has: `components/`, `composables/`, `use-cases/`, `views/`, `repositories/`, `stores/`, `types/`
+
+No `entities/` (types cover this) or `services/` (use cases replace this).
 
 ## Core Layer (`src/core/`)
 
@@ -64,6 +68,14 @@ Each module has: `components/`, `entities/`, `pages/`, `repositories/`, `service
 - Audit fields: `created_at`, `updated_at`, `deleted_at` (soft deletes)
 - Migrations versioned in `schema_version` table, auto-applied on init
 - TypeScript entity interfaces are aligned 1:1 with SQL table columns
+
+## Component Conventions
+
+- **SFC + Composable pattern**: each component in its own directory with `.vue` (template inline + script setup) + `.ts` (composable) + `.scss` (optional)
+- **No separated `.html` templates** — `<script setup>` does not support `src`, and eslint-plugin-vue can't lint external templates
+- **Single responsibility**: split large components into child components, not more files
+- **`views/`** for route-level components (not `pages/`)
+- **Composables** (`useXxx()`) for extracting reusable or complex logic
 
 ## Code Conventions
 
