@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">IcarApp</string>
+    <string name="title_activity_main">IcarApp</string>
+    <string name="package_name">com.crisg0510.icar</string>
+    <string name="custom_url_scheme">com.crisg0510.icar</string>
+</resources>
