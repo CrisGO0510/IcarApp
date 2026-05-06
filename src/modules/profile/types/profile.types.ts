@@ -2,33 +2,19 @@ import type { BaseEntity } from 'src/core/types/base.types';
 
 // ── Constants ────────────────────────────────────────────────────────
 
-export const ACTIVITY_LEVELS = [
-  'sedentary',
-  'lightly_active',
-  'moderately_active',
-  'very_active',
-  'extra_active',
-] as const;
+export const UNIT_SYSTEMS = ['metric', 'imperial'] as const;
+export type UnitSystem = (typeof UNIT_SYSTEMS)[number];
 
-export type ActivityLevel = (typeof ACTIVITY_LEVELS)[number];
-
-export const FITNESS_GOALS = [
-  'lose_weight',
-  'maintain_weight',
-  'gain_weight',
-  'build_muscle',
-  'improve_endurance',
-] as const;
-
-export type FitnessGoal = (typeof FITNESS_GOALS)[number];
+export const REST_TIME_PRESETS = [60, 90, 120] as const;
+export type RestTimePreset = (typeof REST_TIME_PRESETS)[number];
 
 // ── User Profile ─────────────────────────────────────────────────────
 
 export interface UserProfile extends BaseEntity {
-  name?: string;
-  age?: number;
-  weight?: number; // kg
-  height?: number; // cm
-  activityLevel?: ActivityLevel;
-  goal?: FitnessGoal;
+  name: string;
+  defaultRestTime: number; // seconds
+  unitSystem: UnitSystem;
+  maintenanceCalories: number;
+  weight: number; // kg or lbs depending on unitSystem
+  height: number; // cm or in depending on unitSystem
 }
