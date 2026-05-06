@@ -22,9 +22,7 @@
       dense
       dark
       outlined
-      :disable="selectedPreset !== null"
       suffix="seg"
-      @update:model-value="onCustomInput"
     />
   </div>
 </template>
@@ -40,6 +38,6 @@ const emit = defineEmits<{
   'update:modelValue': [value: number | null];
 }>();
 
-const { selectedPreset, customRestTime, REST_TIME_PRESETS, selectPreset, onCustomInput } =
+const { selectedPreset, customRestTime, REST_TIME_PRESETS, selectPreset } =
   useRestTimeSelector(emit);
 </script>

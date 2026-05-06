@@ -16,15 +16,15 @@ export function useRestTimeSelector(
 
   watch(restTime, (value) => emit('update:modelValue', value), { immediate: true });
 
+  watch(customRestTime, (value) => {
+    if (value && value > 0) {
+      selectedPreset.value = null;
+    }
+  });
+
   function selectPreset(preset: RestTimePreset) {
     selectedPreset.value = preset;
     customRestTime.value = null;
-  }
-
-  function onCustomInput(value: string | number | null) {
-    if (value && Number(value) > 0) {
-      selectedPreset.value = null;
-    }
   }
 
   return {
@@ -32,6 +32,5 @@ export function useRestTimeSelector(
     customRestTime,
     REST_TIME_PRESETS,
     selectPreset,
-    onCustomInput,
   };
 }
