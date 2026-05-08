@@ -1,13 +1,13 @@
 import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 import type { UserProfile } from '../types/profile.types';
-import { ProfileSQLiteRepository } from '../repositories/profile.sqlite-repository';
+import { ProfileJsonRepository } from '../repositories/profile.json-repository';
 import { getProfile } from '../use-cases/getProfile';
 import { createProfile } from '../use-cases/createProfile';
 import { updateProfile } from '../use-cases/updateProfile';
 
 export const useProfileStore = defineStore('profile', () => {
-  const repository = new ProfileSQLiteRepository();
+  const repository = new ProfileJsonRepository();
 
   const get = getProfile(repository);
   const create = createProfile(repository);

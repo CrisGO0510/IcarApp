@@ -7,7 +7,7 @@ IcarApp es una aplicación móvil híbrida desarrollada con:
 * Vue 3
 * Quasar Framework
 * Capacitor
-* SQLite como motor de persistencia local
+* Capacitor Preferences como almacén local de JSON (web → localStorage, nativo → NSUserDefaults / SharedPreferences)
 
 La aplicación adopta un enfoque **offline-first**, priorizando:
 
@@ -39,7 +39,7 @@ Domain / Business Logic Layer
         ↓
 Repository Layer
         ↓
-SQLite Adapter
+JSON Storage Adapter (Capacitor Preferences)
 ```
 
 Cada capa tiene responsabilidades claramente definidas.
@@ -68,8 +68,8 @@ Responsabilidades:
 Restricciones:
 
 * No contiene lógica de negocio
-* No ejecuta consultas SQL
-* No accede directamente a SQLite
+* No ejecuta operaciones de persistencia
+* No accede directamente al storage
 
 ---
 
@@ -96,7 +96,7 @@ Ejemplos:
 
 Restricción:
 
-* No contiene queries SQL
+* No contiene operaciones de persistencia
 * No contiene lógica compleja de negocio
 
 ---
@@ -138,60 +138,59 @@ src/repositories/
 Responsabilidades:
 
 * Encapsular acceso a datos
-* Traducir entidades a SQL
-* Ejecutar consultas
-* Mapear resultados a modelos de dominio
+* Operar sobre colecciones JSON (carga, filtrado, escritura)
+* Mapear estructuras serializadas a modelos de dominio (rehidratar `Date`, etc.)
 
 Ejemplos:
 
-* workout.repository.ts
-* routine.repository.ts
-* nutrition.repository.ts
+* workout.json-repository.ts
+* routine.json-repository.ts
+* nutrition.json-repository.ts
 
 Principio clave:
 
-> Ninguna otra capa conoce detalles de SQLite.
+> Ninguna otra capa conoce detalles del storage.
 
-Esto permite que en el futuro el repositorio pueda cambiar su implementación hacia una API REST sin afectar el resto del sistema.
+Cada repositorio implementa el port `Repository<T>`. La implementación actual (`JsonRepository`) puede reemplazarse por una `HttpRepository` cuando llegue el backend, sin tocar UI, stores ni use cases.
 
 ---
 
-### 3.5 SQLite Adapter
+### 3.5 JSON Storage Adapter
 
 Ubicación:
 
 ```
-src/storage/sqlite.adapter.ts
+src/core/repositories/json.repository.ts
 ```
 
 Responsabilidades:
 
-* Inicializar la base de datos
-* Abrir y cerrar conexiones
-* Ejecutar queries genéricas
-* Gestionar transacciones
-* Ejecutar migraciones
+* Persistir cada entidad como un array JSON bajo una clave de Capacitor Preferences
+* Implementar CRUD genérico (`create`, `findById`, `findAll`, `update`, `delete`, `count`)
+* Aplicar borrado lógico (`deletedAt`) y filtrarlo en lecturas
+* Serializar / deserializar tipos no nativos de JSON (`Date` ↔ ISO string)
 
-Este adaptador encapsula el uso del plugin de SQLite de Capacitor.
+Las clases concretas extienden `JsonRepository<T>` y solo declaran su `storageKey`.
+El plugin `@capacitor/preferences` provee la misma API en web (localStorage) y nativo (NSUserDefaults / SharedPreferences), eliminando código condicional por plataforma.
 
 ---
 
 ## 4. Diseño de Persistencia
 
-La aplicación utiliza SQLite como base de datos local estructurada.
+La aplicación persiste cada entidad como un documento JSON local.
 
 ### Principios de diseño:
 
-* Uso de UUID como identificador primario
-* Estructura relacional normalizada
-* Campos de auditoría:
+* Una clave de Preferences por colección (ej. `icarapp:user_profile`, `icarapp:exercises`)
+* Cada clave almacena un array de entidades del mismo tipo
+* Uso de UUID como identificador primario (`crypto.randomUUID()`)
+* Campos de auditoría en cada entidad:
 
-  * created_at
-  * updated_at
-  * deleted_at (opcional)
-* Separación clara entre entidades
-
-No se almacenan estructuras complejas en JSON embebido.
+  * createdAt
+  * updatedAt
+  * deletedAt (opcional, soft delete)
+* Las relaciones se modelan por referencia de UUID; los joins se hacen en memoria al nivel de use case
+* La forma de los documentos JSON imita la respuesta esperada de un futuro endpoint REST, para que la migración a `HttpRepository` sea mecánica
 
 ---
 
@@ -199,7 +198,7 @@ No se almacenan estructuras complejas en JSON embebido.
 
 ### 5.1 Entrenamiento
 
-Tablas principales:
+Colecciones principales:
 
 * routines
 * exercises
@@ -207,7 +206,7 @@ Tablas principales:
 * workout_sessions
 * exercise_sets
 
-Relaciones:
+Relaciones (por referencia de UUID):
 
 * Una rutina tiene muchos ejercicios
 * Una sesión de entrenamiento pertenece a una rutina
@@ -218,7 +217,7 @@ Relaciones:
 
 ### 5.2 Nutrición
 
-Tablas principales:
+Colecciones principales:
 
 * macro_goals
 * meals
@@ -241,13 +240,13 @@ Vue Component
     ↓
 workout.store.addSet()
     ↓
-workout.service.addSetToSession()
+addSetUseCase()
     ↓
-workout.repository.insertSet()
+workout.json-repository.create()
     ↓
-sqlite.adapter.execute()
+JsonRepository (load → mutate → save)
     ↓
-SQLite
+Capacitor Preferences (localStorage / NSUserDefaults / SharedPreferences)
 ```
 
 Luego:
@@ -257,31 +256,24 @@ Luego:
 
 ---
 
-## 7. Estrategia de Migraciones
+## 7. Estrategia de Evolución del Esquema
 
-Se implementará control de versiones del esquema.
+Sin tablas ni migraciones SQL, la evolución del modelo se maneja al nivel del documento JSON:
 
-Elementos requeridos:
+* Cada entidad puede incluir un campo opcional `schemaVersion` cuando deba diferenciarse de versiones previas.
+* La rehidratación (`deserialize` en `JsonRepository`) puede normalizar campos al cargar — por ejemplo, asignar valores por defecto a propiedades nuevas o renombrar claves obsoletas.
+* Una operación destructiva (drop / rename masivo) se materializa como una migración puntual en código que se ejecuta una sola vez al iniciar la app, gobernada por una clave dedicada en Preferences (`icarapp:schema_version`).
 
-* Tabla `schema_version`
-* Archivos de migración numerados
-* Ejecución automática al iniciar la aplicación
-
-Ejemplo:
-
-* migration_001_init.sql
-* migration_002_add_notes.sql
-
-El sistema verificará la versión actual y aplicará migraciones pendientes.
+Esto es suficiente para un esquema en evolución lenta y mantiene la simplicidad del storage.
 
 ---
 
 ## 8. Principios Técnicos
 
 1. Separación estricta de responsabilidades
-2. Ningún componente ejecuta SQL directamente
+2. Ningún componente accede al storage directamente
 3. Ningún store contiene lógica compleja
-4. Servicios concentran la lógica del dominio
+4. Use cases concentran la lógica del dominio
 5. Repositorios encapsulan persistencia
 6. Diseño preparado para futura sincronización
 
@@ -300,7 +292,7 @@ Esto permitirá en el futuro:
 
 * Implementar sincronización
 * Migrar a backend REST
-* Cambiar SQLite por API sin modificar UI ni lógica de negocio
+* Reemplazar el adapter JSON por un `HttpRepository` sin modificar UI ni lógica de negocio
 
 ---
 

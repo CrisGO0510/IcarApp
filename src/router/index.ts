@@ -30,7 +30,7 @@ export default defineRouter(function (/* { store, ssrContext } */) {
       try {
         await profileStore.loadProfile();
       } catch {
-        // SQLite not available (e.g. browser dev mode) — treat as no profile
+        // Storage unreachable — treat as no profile so onboarding can run.
       }
       profileLoaded = true;
     }

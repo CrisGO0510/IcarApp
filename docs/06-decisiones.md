@@ -42,6 +42,8 @@ No se implementará backend ni sincronización en la fase MVP.
 
 ## ADR-002 – Uso de SQLite como Base de Datos Local
 
+> **Estado: Reemplazada por ADR-008.**
+
 ### Contexto
 
 La aplicación requiere persistencia estructurada para entrenamiento y nutrición, con relaciones claras entre entidades.
@@ -70,6 +72,10 @@ Se utilizará SQLite como motor de persistencia local a través de Capacitor.
 * Necesidad de gestionar migraciones.
 * Requiere encapsulamiento adecuado del acceso a datos.
 
+### Motivo del reemplazo
+
+El soporte de SQLite en browser (vía `jeep-sqlite` + WASM) introdujo fricción significativa en el dev loop (carga de WASM, paths de assets, MIME types). Se priorizó tener un único adapter cross-platform y una forma de persistencia que mimetice respuestas HTTP de cara a un futuro backend. Ver ADR-008.
+
 ---
 
 ## ADR-003 – Arquitectura en Capas con Separación de Responsabilidades
@@ -84,15 +90,15 @@ Se adopta una arquitectura en capas:
 
 * Presentation Layer
 * State Layer (Pinia)
-* Domain / Services
+* Domain / Use Cases
 * Repository Layer
-* SQLite Adapter
+* JSON Storage Adapter (Capacitor Preferences)
 
 ### Justificación
 
 * Facilita mantenimiento.
 * Permite escalar el proyecto sin reestructuración profunda.
-* Evita que componentes ejecuten SQL.
+* Evita que componentes accedan al storage directamente.
 * Permite reemplazar la fuente de datos en el futuro.
 
 ### Consecuencias
@@ -156,28 +162,33 @@ No se implementará autenticación de usuario en la fase MVP.
 
 ## ADR-006 – Control de Versiones del Esquema (Migraciones)
 
+> **Estado: Modificada (ver ADR-008 para el enfoque actual basado en JSON).**
+
 ### Contexto
 
 El modelo de datos puede evolucionar con el tiempo.
 
-### Decisión
+### Decisión original (SQLite)
 
-Se implementará un sistema básico de versionado de esquema mediante:
+Sistema básico de versionado de esquema mediante tabla `schema_version` y archivos de migración numerados ejecutados al iniciar.
 
-* Tabla `schema_version`
-* Archivos de migración numerados
-* Ejecución automática al iniciar la aplicación
+### Decisión actual (JSON / Preferences)
+
+Sin schema rígido, la evolución se maneja en la capa de deserialización:
+
+* Campo opcional `schemaVersion` en entidades cuando deba diferenciarse de versiones previas.
+* `JsonRepository.deserialize` normaliza al cargar (defaults para campos nuevos, renombrar claves obsoletas).
+* Migraciones destructivas se ejecutan una sola vez al iniciar, gobernadas por la clave `icarapp:schema_version` en Preferences.
 
 ### Justificación
 
 * Permite modificar estructura sin perder datos.
-* Alinea el proyecto con prácticas profesionales.
-* Facilita mantenimiento a largo plazo.
+* Adecuado para evolución lenta del esquema sin la complejidad de un motor SQL.
 
 ### Consecuencias
 
 * Requiere disciplina al modificar el modelo.
-* Incrementa complejidad inicial mínima.
+* Las normalizaciones residen en código y deben mantenerse junto al tipo.
 
 ---
 
@@ -212,6 +223,42 @@ Cada dominio contendrá:
 
 * Estructura más extensa.
 * Requiere disciplina organizacional.
+
+---
+
+## ADR-008 – Persistencia local con JSON sobre Capacitor Preferences
+
+### Contexto
+
+ADR-002 estableció SQLite como motor de persistencia. Al habilitar el browser como plataforma de uso, el plugin `@capacitor-community/sqlite` requiere `jeep-sqlite` + WASM (sql.js), lo que introduce:
+
+* Carga adicional de assets (`sql-wasm.wasm`, ~660KB) con paths sensibles.
+* Fricción en el dev loop (MIME types, fallback SPA del dev server).
+* Dos rutas de inicialización (web vs nativo) en el adapter.
+
+Adicionalmente, está previsto un backend REST en el futuro. Modelar la persistencia local con la misma forma que tendrá la respuesta del endpoint reduce el costo de la migración.
+
+### Decisión
+
+Se reemplaza SQLite por un **adapter JSON sobre `@capacitor/preferences`**:
+
+* Cada colección se guarda como un array JSON bajo una clave de Preferences (ej. `icarapp:user_profile`).
+* `JsonRepository<T>` provee CRUD genérico (`create`, `findById`, `findAll`, `update`, `delete`, `count`) con soft-delete vía `deletedAt`.
+* Los repositorios concretos extienden la clase y solo declaran `storageKey`.
+* Mismo port `Repository<T>` que ya consumían los use cases — sin cambios upstream.
+
+### Justificación
+
+* `@capacitor/preferences` provee la misma API en web (localStorage) y nativo (NSUserDefaults / SharedPreferences). Un solo adapter, cero branching por plataforma.
+* La forma de los documentos JSON imita la respuesta esperada del backend; el futuro `HttpRepository<T>` será un drop-in sobre el mismo port.
+* Elimina dependencias pesadas (sql.js, jeep-sqlite, plugin SQLite de Capacitor) y los assets WASM asociados.
+* Adecuado para el volumen esperado del MVP (cientos de sets, comidas, sesiones).
+
+### Consecuencias
+
+* Sin queries SQL: el filtrado y los joins se hacen en memoria sobre los arrays cargados.
+* La capacidad de almacenamiento queda acotada por el backend de Preferences (en web ≈ 5MB de localStorage). Para el dominio actual no es restrictivo.
+* La evolución del esquema se gestiona en código (deserializadores y migraciones puntuales), no en archivos SQL — ver ADR-006.
 
 ---
 

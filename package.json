@@ -15,7 +15,7 @@
     "postinstall": "quasar prepare"
   },
   "dependencies": {
-    "@capacitor-community/sqlite": "^8.0.0",
+    "@capacitor/preferences": "^8.0.1",
     "@quasar/extras": "^1.16.4",
     "pinia": "^3.0.1",
     "pinia-plugin-persistedstate": "^4.7.1",
