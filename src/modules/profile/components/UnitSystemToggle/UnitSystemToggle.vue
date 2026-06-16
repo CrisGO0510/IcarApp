@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-caption text-grey-5 q-mb-xs">UNIDAD DE MEDIDA</div>
+    <FieldLabel>UNIDAD DE MEDIDA</FieldLabel>
     <q-btn-toggle
       :model-value="modelValue"
       spread
@@ -18,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+import FieldLabel from 'src/components/base/FieldLabel/FieldLabel.vue';
 import type { UnitSystem } from '../../types/profile.types';
 
 defineProps<{

@@ -1,25 +1,28 @@
 // Quasar SCSS (& Sass) Variables
 // --------------------------------------------------
-// To customize the look and feel of this app, you can override
-// the Sass/SCSS variables found in Quasar's source Sass/SCSS files.
+// Paleta de marca de IcarApp (dark-first). Estas variables sobreescriben las
+// de Quasar y, junto con las propias declaradas aquí, quedan disponibles en
+// cualquier archivo .vue/.scss. Editá los colores acá, nunca hardcodeados en vistas.
 
-// Check documentation for full list of Quasar variables
+// ── Marca ────────────────────────────────────────────────────────────
+$primary: #38bdf8; // cian — acento principal (botones, links, foco)
+$secondary: #64748b; // slate — acciones secundarias / neutras
+$accent: #2dd4bf; // teal — acento de apoyo / highlights
 
-// Your own variables (that are declared here) and Quasar's own
-// ones will be available out of the box in your .vue/.scss/.sass files
+// ── Superficies (base oscura) ────────────────────────────────────────
+$dark-page: #0f1115; // fondo de la app (body en dark mode)
+$dark: #1a1a1a; // superficie de componentes (cards, inputs, headers)
 
-// It's highly recommended to change the default colors
-// to match your app's branding.
-// Tip: Use the "Theme Builder" on Quasar's documentation website.
+// ── Estados semánticos ───────────────────────────────────────────────
+$positive: #22c55e;
+$negative: #ef4444;
+$info: #38bdf8;
+$warning: #f59e0b;
 
-$primary: #1976d2;
-$secondary: #26a69a;
-$accent: #9c27b0;
-
-$dark: #1d1d1d;
-$dark-page: #121212;
-
-$positive: #21ba45;
-$negative: #c10015;
-$info: #31ccec;
-$warning: #f2c037;
+// ── Tokens propios (no son de Quasar) ────────────────────────────────
+// Úsalos en .scss para superficies extra y jerarquía de texto.
+$surface: $dark; // superficie nivel 1
+$surface-variant: #242424; // superficie nivel 2 (elementos elevados)
+$text-strong: #ffffff; // texto principal sobre dark
+$text-muted: #a1a1aa; // labels/captions secundarios
+$text-faint: #71717a; // texto terciario (disclaimers, footnotes)

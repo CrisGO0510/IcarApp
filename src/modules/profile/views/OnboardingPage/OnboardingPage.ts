@@ -2,19 +2,19 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useProfileStore } from '../../stores/profile.store';
 import { useFormValidation } from '../../composables/useFormValidation';
-import type { UnitSystem } from '../../types/profile.types';
+import type { OnboardingForm } from '../../types/profile.types';
 
 export function useOnboardingPage() {
   const router = useRouter();
   const profileStore = useProfileStore();
   const { submitted, isPositive, markSubmitted } = useFormValidation();
 
-  const form = ref({
+  const form = ref<OnboardingForm>({
     name: '',
-    unitSystem: 'metric' as UnitSystem,
-    maintenanceCalories: null as number | null,
-    weight: null as number | null,
-    height: null as number | null,
+    unitSystem: 'metric',
+    maintenanceCalories: 0,
+    weight: 0,
+    height: 0,
   });
 
   const restTime = ref<number | null>(90);
@@ -43,9 +43,9 @@ export function useOnboardingPage() {
         name: form.value.name.trim(),
         defaultRestTime: restTime.value!,
         unitSystem: form.value.unitSystem,
-        maintenanceCalories: form.value.maintenanceCalories!,
-        weight: form.value.weight!,
-        height: form.value.height!,
+        maintenanceCalories: form.value.maintenanceCalories,
+        weight: form.value.weight,
+        height: form.value.height,
       });
       await router.push('/');
     } finally {

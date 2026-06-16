@@ -18,3 +18,11 @@ export interface UserProfile extends BaseEntity {
   weight: number; // kg or lbs depending on unitSystem
   height: number; // cm or in depending on unitSystem
 }
+
+export interface OnboardingForm {
+  name: string;
+  unitSystem: UnitSystem;
+  maintenanceCalories: number;
+  weight: number;
+  height: number;
+}

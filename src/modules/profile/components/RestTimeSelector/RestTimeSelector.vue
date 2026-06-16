@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="text-caption text-grey-5 q-mb-xs">DESCANSO POR SERIE</div>
+    <FieldLabel>DESCANSO POR SERIE</FieldLabel>
     <div class="row q-gutter-sm q-mb-sm">
       <q-btn
         v-for="preset in REST_TIME_PRESETS"
@@ -20,7 +20,6 @@
       placeholder="Valor personalizado (seg)"
       type="number"
       dense
-      dark
       outlined
       suffix="seg"
     />
@@ -28,6 +27,7 @@
 </template>
 
 <script setup lang="ts">
+import FieldLabel from 'src/components/base/FieldLabel/FieldLabel.vue';
 import { useRestTimeSelector } from './RestTimeSelector';
 
 defineProps<{

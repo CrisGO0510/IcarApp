@@ -1,5 +1,15 @@
 // app global css in SCSS form
 
+// Jerarquía de texto semántica (basada en los tokens de quasar.variables.scss).
+// Úsalas en vez de las utilidades text-grey-* para mantener la paleta centralizada.
+.text-muted {
+  color: $text-muted;
+}
+
+.text-faint {
+  color: $text-faint;
+}
+
 input[type='number'] {
   -moz-appearance: textfield;
 
