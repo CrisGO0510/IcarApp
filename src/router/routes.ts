@@ -8,7 +8,12 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/',
     component: () => import('layouts/MainLayout/MainLayout.vue'),
-    children: [{ path: '', component: () => import('src/views/IndexPage/IndexPage.vue') }],
+    children: [
+      {
+        path: '',
+        component: () => import('src/modules/activity/views/DashboardPage/DashboardPage.vue'),
+      },
+    ],
   },
   {
     path: '/:catchAll(.*)*',

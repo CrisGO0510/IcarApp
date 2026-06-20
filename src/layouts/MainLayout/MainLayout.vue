@@ -1,26 +1,27 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
+    <q-header class="bg-transparent">
       <q-toolbar>
-        <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-        <q-toolbar-title>IcarApp</q-toolbar-title>
+        <q-toolbar-title class="text-center text-weight-bold">Dashboard</q-toolbar-title>
       </q-toolbar>
     </q-header>
-
-    <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-list>
-        <q-item-label header>IcarApp</q-item-label>
-      </q-list>
-    </q-drawer>
 
     <q-page-container>
       <router-view />
     </q-page-container>
+
+    <q-footer class="app-footer">
+      <AppTabBar />
+    </q-footer>
   </q-layout>
 </template>
 
 <script setup lang="ts">
-import { useMainLayout } from './MainLayout';
-
-const { leftDrawerOpen, toggleLeftDrawer } = useMainLayout();
+import AppTabBar from 'src/components/layout/AppTabBar/AppTabBar.vue';
 </script>
+
+<style scoped lang="scss">
+.app-footer {
+  background: $surface;
+}
+</style>

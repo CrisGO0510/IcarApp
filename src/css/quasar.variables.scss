@@ -1,28 +1,17 @@
-// Quasar SCSS (& Sass) Variables
-// --------------------------------------------------
-// Paleta de marca de IcarApp (dark-first). Estas variables sobreescriben las
-// de Quasar y, junto con las propias declaradas aquí, quedan disponibles en
-// cualquier archivo .vue/.scss. Editá los colores acá, nunca hardcodeados en vistas.
+$primary: #3879fa;
+$secondary: #64748b;
+$accent: #2dd4bf;
 
-// ── Marca ────────────────────────────────────────────────────────────
-$primary: #38bdf8; // cian — acento principal (botones, links, foco)
-$secondary: #64748b; // slate — acciones secundarias / neutras
-$accent: #2dd4bf; // teal — acento de apoyo / highlights
+$dark-page: #171a1f;
+$dark: #1e2229;
 
-// ── Superficies (base oscura) ────────────────────────────────────────
-$dark-page: #0f1115; // fondo de la app (body en dark mode)
-$dark: #1a1a1a; // superficie de componentes (cards, inputs, headers)
-
-// ── Estados semánticos ───────────────────────────────────────────────
 $positive: #22c55e;
 $negative: #ef4444;
-$info: #38bdf8;
-$warning: #f59e0b;
+$info: #3879fa;
+$warning: #f5b83d;
 
-// ── Tokens propios (no son de Quasar) ────────────────────────────────
-// Úsalos en .scss para superficies extra y jerarquía de texto.
-$surface: $dark; // superficie nivel 1
-$surface-variant: #242424; // superficie nivel 2 (elementos elevados)
-$text-strong: #ffffff; // texto principal sobre dark
-$text-muted: #a1a1aa; // labels/captions secundarios
-$text-faint: #71717a; // texto terciario (disclaimers, footnotes)
+$surface: $dark;
+$surface-variant: #181b20;
+$text-strong: #f9fafb;
+$text-muted: #a1a1aa;
+$text-faint: #71717a;

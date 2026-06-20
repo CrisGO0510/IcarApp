@@ -1,13 +1,16 @@
-// app global css in SCSS form
-
-// Jerarquía de texto semántica (basada en los tokens de quasar.variables.scss).
-// Úsalas en vez de las utilidades text-grey-* para mantener la paleta centralizada.
 .text-muted {
   color: $text-muted;
 }
 
 .text-faint {
   color: $text-faint;
+}
+
+.app-card {
+  background: $surface;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 16px;
 }
 
 input[type='number'] {
@@ -19,4 +22,3 @@ input[type='number'] {
     margin: 0;
   }
 }
-

@@ -1,0 +1,19 @@
+.dashboard-page {
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  &__stats {
+    display: flex;
+    gap: 16px;
+
+    > * {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+}
