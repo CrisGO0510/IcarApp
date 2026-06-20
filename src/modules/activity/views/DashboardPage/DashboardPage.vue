@@ -1,6 +1,6 @@
 <template>
   <q-page class="dashboard-page q-pa-md">
-    <div class="column q-gutter-y-md dashboard-page__content">
+    <div class="column q-gutter-y-md page-content">
       <div>
         <div class="text-caption text-uppercase text-primary text-weight-bold">{{ todayLabel }}</div>
         <div class="text-h5 text-weight-bolder">{{ greeting }}</div>
@@ -44,5 +44,3 @@ import { useDashboardPage } from './DashboardPage';
 
 const { summary, greeting, todayLabel, weightValue, weightUnit } = useDashboardPage();
 </script>
-
-<style scoped lang="scss" src="./DashboardPage.scss"></style>

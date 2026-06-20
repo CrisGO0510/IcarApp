@@ -13,6 +13,11 @@
   padding: 16px;
 }
 
+.page-content {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
 input[type='number'] {
   -moz-appearance: textfield;
 

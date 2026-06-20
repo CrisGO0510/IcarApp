@@ -12,6 +12,12 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         component: () => import('src/modules/activity/views/DashboardPage/DashboardPage.vue'),
+        meta: { title: 'Dashboard' },
+      },
+      {
+        path: 'progreso',
+        component: () => import('src/modules/progress/views/ProgressPage/ProgressPage.vue'),
+        meta: { title: 'Progreso' },
       },
     ],
   },
