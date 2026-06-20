@@ -1,6 +1,6 @@
 <template>
   <q-page class="dashboard-page q-pa-md">
-    <div class="dashboard-page__content">
+    <div class="column q-gutter-y-md dashboard-page__content">
       <div>
         <div class="text-caption text-uppercase text-primary text-weight-bold">{{ todayLabel }}</div>
         <div class="text-h5 text-weight-bolder">{{ greeting }}</div>
@@ -12,14 +12,24 @@
         <div class="text-subtitle1 text-weight-bold">Último entrenamiento</div>
         <LastWorkoutCard v-if="summary.lastWorkout" :workout="summary.lastWorkout" />
 
-        <div class="dashboard-page__stats">
-          <StatCard
-            label="Frecuencia semanal"
-            :value="summary.weeklyStats.workoutFrequency"
-            unit="veces"
-            action-icon="add"
-          />
-          <StatCard label="Peso medio" :value="weightValue" :unit="weightUnit" />
+        <div class="row q-col-gutter-x-md">
+          <div class="col-6">
+            <StatCard
+              class="full-height"
+              label="Frecuencia semanal"
+              :value="summary.weeklyStats.workoutFrequency"
+              unit="veces"
+            />
+          </div>
+          <div class="col-6">
+            <StatCard
+              class="full-height"
+              label="Peso medio"
+              :value="weightValue"
+              :unit="weightUnit"
+              action-icon="add"
+            />
+          </div>
         </div>
       </template>
     </div>

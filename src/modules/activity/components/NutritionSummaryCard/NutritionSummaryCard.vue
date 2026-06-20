@@ -15,7 +15,7 @@
       </div>
     </div>
 
-    <div class="macro-list">
+    <div class="column q-gutter-y-sm">
       <MacroProgressBar label="Proteína" :progress="summary.protein" unit="g" />
       <MacroProgressBar label="Carbohidratos" :progress="summary.carbohydrates" unit="g" />
       <MacroProgressBar label="Grasa" :progress="summary.fat" unit="g" />
@@ -39,11 +39,5 @@ const caloriesLabel = computed(() => props.summary.calories.consumed.toLocaleStr
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 12px;
   padding: 16px;
-}
-
-.macro-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
 }
 </style>
