@@ -1,23 +1,32 @@
 import { ref } from 'vue';
 import { defineStore, acceptHMRUpdate } from 'pinia';
 import type { DashboardSummary } from '../types/activity.types';
-import { buildDashboardSummary } from '../use-cases/buildDashboardSummary';
-import { dashboardMockInput } from './dashboard.mock';
-
-function todayKey(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+import { getDashboardSummary } from '../use-cases/getDashboardSummary';
+import { RoutineJsonRepository } from 'src/modules/training/repositories/routine.json-repository';
+import { RoutineExerciseJsonRepository } from 'src/modules/training/repositories/routine-exercise.json-repository';
+import { ExerciseJsonRepository } from 'src/modules/training/repositories/exercise.json-repository';
+import { WorkoutSessionJsonRepository } from 'src/modules/training/repositories/workout-session.json-repository';
+import { ExerciseSetJsonRepository } from 'src/modules/training/repositories/exercise-set.json-repository';
+import { MealEntryJsonRepository } from 'src/modules/nutrition/repositories/meal-entry.json-repository';
+import { MacroGoalJsonRepository } from 'src/modules/nutrition/repositories/macro-goal.json-repository';
+import { BodyWeightLogJsonRepository } from 'src/modules/measurements/repositories/body-weight.json-repository';
 
 export const useActivityStore = defineStore('activity', () => {
+  const buildSummary = getDashboardSummary({
+    routineRepo: new RoutineJsonRepository(),
+    pivotRepo: new RoutineExerciseJsonRepository(),
+    exerciseRepo: new ExerciseJsonRepository(),
+    sessionRepo: new WorkoutSessionJsonRepository(),
+    setRepo: new ExerciseSetJsonRepository(),
+    mealEntryRepo: new MealEntryJsonRepository(),
+    macroGoalRepo: new MacroGoalJsonRepository(),
+    bodyWeightRepo: new BodyWeightLogJsonRepository(),
+  });
+
   const summary = ref<DashboardSummary | null>(null);
 
-  function loadDashboard(): Promise<void> {
-    summary.value = buildDashboardSummary(todayKey(), dashboardMockInput);
-    return Promise.resolve();
+  async function loadDashboard(): Promise<void> {
+    summary.value = await buildSummary();
   }
 
   return { summary, loadDashboard };
