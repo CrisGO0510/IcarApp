@@ -37,6 +37,9 @@ export interface RoutineExerciseView {
 export interface RoutineSummary {
   routine: Routine;
   exerciseCount: number;
+  lastPerformedAt: Date | null;
+  durationMinutes: number | null;
+  inProgress: boolean;
 }
 
 export interface SetDayGroup {

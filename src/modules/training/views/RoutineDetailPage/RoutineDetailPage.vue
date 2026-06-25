@@ -5,7 +5,16 @@
     </Teleport>
 
     <div class="column q-gutter-y-md page-content">
-      <div class="text-h6 text-weight-bold">{{ current?.name }}</div>
+      <div>
+        <div class="text-h6 text-weight-bold">{{ current?.name }}</div>
+        <div
+          v-if="currentInProgress"
+          class="row items-center q-gutter-x-xs text-caption text-primary text-weight-medium"
+        >
+          <q-icon name="pending" size="14px" />
+          <span class="text-uppercase">En progreso</span>
+        </div>
+      </div>
 
       <q-input v-model="query" dense outlined placeholder="Buscar ejercicio en esta rutina">
         <template #prepend>
@@ -32,10 +41,18 @@
         <q-slide-item
           v-for="view in visibleExercises"
           :key="view.pivotId"
+          left-color="negative"
           right-color="positive"
           class="exercise-slide"
+          @left="onSwipeDelete(view, $event)"
           @right="onSwipeSet(view, $event)"
         >
+          <template #left>
+            <div class="row items-center q-gutter-x-sm">
+              <q-icon name="delete" />
+              <span>Eliminar</span>
+            </div>
+          </template>
           <template #right>
             <div class="row items-center q-gutter-x-sm">
               <q-icon name="check" />
@@ -83,6 +100,7 @@ import { useRoutineDetailPage } from './RoutineDetailPage';
 
 const {
   current,
+  currentInProgress,
   visibleExercises,
   query,
   showSetDialog,
@@ -94,6 +112,7 @@ const {
   statusLabelFor,
   statusColorFor,
   onSwipeSet,
+  onSwipeDelete,
   onSubmitSet,
   onOpenExercise,
   stopRest,

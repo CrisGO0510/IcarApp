@@ -1,6 +1,7 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
+import { useQuasar } from 'quasar';
 import { useRoutineStore } from '../../stores/routine.store';
 import { useWorkoutStore } from '../../stores/workout.store';
 import { useProfileStore } from 'src/modules/profile/stores/profile.store';
@@ -12,11 +13,12 @@ const DEFAULT_REST_SECONDS = 90;
 export function useRoutineDetailPage() {
   const route = useRoute();
   const router = useRouter();
+  const $q = useQuasar();
   const routineStore = useRoutineStore();
   const workoutStore = useWorkoutStore();
   const profileStore = useProfileStore();
 
-  const { current, currentExercises } = storeToRefs(routineStore);
+  const { current, currentExercises, currentInProgress } = storeToRefs(routineStore);
   const { lastSets, restRemaining, restRunning } = storeToRefs(workoutStore);
   const { profile } = storeToRefs(profileStore);
 
@@ -70,6 +72,19 @@ export function useRoutineDetailPage() {
     showSetDialog.value = true;
   }
 
+  function onSwipeDelete(view: RoutineExerciseView, details: { reset: () => void }): void {
+    details.reset();
+    $q.dialog({
+      title: 'Eliminar ejercicio',
+      message: `¿Quitar "${view.exercise.name}" de esta rutina?`,
+      cancel: { flat: true, noCaps: true, label: 'Cancelar' },
+      ok: { unelevated: true, noCaps: true, color: 'negative', label: 'Eliminar' },
+      dark: true,
+    }).onOk(() => {
+      void routineStore.removeExercise(view.pivotId);
+    });
+  }
+
   async function onSubmitSet(payload: { reps: number; weight: number }): Promise<void> {
     const view = activeExercise.value;
     if (!view) return;
@@ -99,6 +114,7 @@ export function useRoutineDetailPage() {
 
   return {
     current,
+    currentInProgress,
     visibleExercises,
     query,
     showSetDialog,
@@ -110,6 +126,7 @@ export function useRoutineDetailPage() {
     statusLabelFor,
     statusColorFor,
     onSwipeSet,
+    onSwipeDelete,
     onSubmitSet,
     onOpenExercise,
     stopRest: workoutStore.stopRest,
