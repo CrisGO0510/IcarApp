@@ -18,6 +18,7 @@ export interface MealRepository extends Repository<Meal> {
 
 export interface MealEntryRepository extends Repository<MealEntry> {
   findByMeal(mealId: string): Promise<MealEntry[]>;
+  findByDate(date: string): Promise<MealEntry[]>;
 }
 
 // ── Food Port ────────────────────────────────────────────────────────

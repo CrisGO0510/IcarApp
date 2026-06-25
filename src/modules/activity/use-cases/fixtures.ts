@@ -31,6 +31,8 @@ export function makeEntry(overrides: Partial<MealEntry> = {}): MealEntry {
     id: 'entry',
     createdAt: new Date(),
     updatedAt: new Date(),
+    date: '2026-06-15',
+    loggedAt: new Date(),
     mealId: 'meal',
     foodName: 'Food',
     quantity: 1,

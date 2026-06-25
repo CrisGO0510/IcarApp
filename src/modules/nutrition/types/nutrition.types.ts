@@ -23,7 +23,9 @@ export interface Meal extends BaseEntity {
 // ── Meal Entry ───────────────────────────────────────────────────────
 
 export interface MealEntry extends BaseEntity {
-  mealId: string;
+  date: string; // YYYY-MM-DD
+  loggedAt: Date;
+  mealId?: string; // sin uso esta iteración (agrupación diferida)
   foodName: string;
   quantity: number;
   unit: string;
