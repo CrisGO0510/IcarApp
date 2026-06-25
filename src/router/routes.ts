@@ -15,6 +15,51 @@ const routes: RouteRecordRaw[] = [
         meta: { title: 'Dashboard' },
       },
       {
+        path: 'entreno',
+        component: () => import('src/modules/training/views/RoutinesListPage/RoutinesListPage.vue'),
+        meta: { title: 'Rutinas' },
+      },
+      {
+        path: 'entreno/ejercicios',
+        component: () =>
+          import('src/modules/training/views/ExerciseLibraryPage/ExerciseLibraryPage.vue'),
+        meta: { title: 'Mis ejercicios', back: true },
+      },
+      {
+        path: 'entreno/ejercicios/:id',
+        component: () =>
+          import('src/modules/training/views/ExerciseHistoryPage/ExerciseHistoryPage.vue'),
+        meta: { title: 'Ejercicio', back: true },
+      },
+      {
+        path: 'entreno/ejercicios/:id/editar',
+        component: () =>
+          import('src/modules/training/views/ExerciseEditPage/ExerciseEditPage.vue'),
+        meta: { title: 'Editar ejercicio', back: true },
+      },
+      {
+        path: 'entreno/rutinas/nueva',
+        component: () => import('src/modules/training/views/RoutineFormPage/RoutineFormPage.vue'),
+        meta: { title: 'Nueva rutina', back: true },
+      },
+      {
+        path: 'entreno/rutinas/:id/editar',
+        component: () => import('src/modules/training/views/RoutineFormPage/RoutineFormPage.vue'),
+        meta: { title: 'Editar rutina', back: true },
+      },
+      {
+        path: 'entreno/rutinas/:id/ejercicio/:pivotId',
+        component: () =>
+          import('src/modules/training/views/ExerciseDetailPage/ExerciseDetailPage.vue'),
+        meta: { title: 'Ejercicio', back: true },
+      },
+      {
+        path: 'entreno/rutinas/:id',
+        component: () =>
+          import('src/modules/training/views/RoutineDetailPage/RoutineDetailPage.vue'),
+        meta: { title: 'Rutina', back: true },
+      },
+      {
         path: 'progreso',
         component: () => import('src/modules/progress/views/ProgressPage/ProgressPage.vue'),
         meta: { title: 'Progreso' },

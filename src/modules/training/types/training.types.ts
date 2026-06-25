@@ -12,10 +12,7 @@ export interface Routine extends BaseEntity {
 
 export interface Exercise extends BaseEntity {
   name: string;
-  description?: string;
-  muscleGroups: string[];
-  equipmentNeeded: string[];
-  instructions: string[];
+  restTime?: number | null; // seconds; null/absent = use the profile default
 }
 
 // ── Routine ↔ Exercise (pivot) ───────────────────────────────────────
@@ -29,6 +26,34 @@ export interface RoutineExercise extends BaseEntity {
   targetWeight?: number;
   restTime?: number; // seconds
   notes?: string;
+}
+
+export interface RoutineExerciseView {
+  pivotId: string;
+  exercise: Exercise;
+  orderIndex: number;
+}
+
+export interface RoutineSummary {
+  routine: Routine;
+  exerciseCount: number;
+}
+
+export interface SetDayGroup {
+  date: Date;
+  sets: ExerciseSet[];
+  totalSets: number;
+  totalReps: number;
+  totalVolume: number;
+}
+
+export interface ExercisePerformance {
+  series: number;
+  reps: number;
+  volume: number;
+  seriesDelta: number | null;
+  repsDelta: number | null;
+  volumeDelta: number | null;
 }
 
 // ── Workout Session ──────────────────────────────────────────────────

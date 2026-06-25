@@ -1,6 +1,7 @@
 import { computed } from 'vue';
 import type { ApexOptions } from 'apexcharts';
 import type { TimeSeriesPoint } from '../../types/progress.types';
+import { chartTheme } from '../chartTheme';
 
 interface Props {
   points: TimeSeriesPoint[];
@@ -19,21 +20,21 @@ export function useWeightProgressionChart(props: Props) {
       animations: { enabled: true },
     },
     theme: { mode: 'dark' },
-    colors: ['#3879fa'],
-    stroke: { curve: 'smooth', width: 3 },
+    colors: [chartTheme.series],
+    stroke: { curve: 'smooth', width: chartTheme.strokeSeries },
     fill: {
       type: 'gradient',
       gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0, stops: [0, 100] },
     },
     grid: {
-      borderColor: 'rgba(255,255,255,0.06)',
+      borderColor: chartTheme.grid,
       strokeDashArray: 4,
       padding: { left: 8, right: 8 },
     },
     dataLabels: { enabled: false },
     xaxis: {
       categories: props.points.map((point) => point.label),
-      labels: { style: { colors: '#a1a1aa' } },
+      labels: { style: { colors: chartTheme.axisLabel } },
       axisBorder: { show: false },
       axisTicks: { show: false },
       tickAmount: 6,

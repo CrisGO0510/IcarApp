@@ -1,21 +1,228 @@
-.text-muted {
-  color: $text-muted;
+// ── Texto: color ───────────────────────────────────────
+.text-muted { color: $text-muted; }
+.text-faint { color: $text-faint; }
+
+// ── Tipografía: escala ─────────────────────────────────
+.text-display {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 36px;
+}
+.text-numeric {
+  font-size: 18px;
+  font-weight: 700;
+}
+.text-h1-page {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+}
+.text-h2-section {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+}
+.text-body {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+}
+.text-small {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+}
+.text-micro {
+  font-size: 11px;
+  font-weight: 500;
 }
 
-.text-faint {
-  color: $text-faint;
+// ── Layout de página ───────────────────────────────────
+.page-content {
+  max-width: 390px;
+  margin: 0 auto;
 }
 
+.onboarding-page {
+  min-height: 100vh;
+}
+
+.volume-filter {
+  min-width: 110px;
+}
+
+// ── Cards ──────────────────────────────────────────────
 .app-card {
   background: $surface;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 16px;
+  border: 1px solid $secondary;
+  border-radius: $border-radius;
+  padding: $space-4;
+  box-shadow: $shadow;
 }
 
-.page-content {
-  max-width: 480px;
-  margin: 0 auto;
+.surface-card {
+  background: $surface-variant;
+  border-radius: $border-radius;
+  padding: $space-4;
+  box-shadow: $shadow;
+}
+
+.surface-card--bordered {
+  border: 1px solid $secondary;
+}
+
+// ── Tiles de ícono ─────────────────────────────────────
+.icon-tile {
+  width: 40px;
+  height: 40px;
+  border-radius: $border-radius;
+  background: rgba($primary, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $primary;
+  flex: 0 0 auto;
+}
+.icon-tile--lg {
+  width: 44px;
+  height: 44px;
+}
+.icon-tile--sm {
+  width: 24px;
+  height: 24px;
+}
+
+// ── Indicadores ────────────────────────────────────────
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+
+.pill-badge {
+  background: rgba($primary, 0.12);
+  color: $primary;
+  border-radius: 8px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+// ── Timer flotante de descanso ─────────────────────────
+.rest-timer {
+  display: inline-flex;
+  align-items: center;
+  gap: $space-3;
+  background: $surface-float;
+  border: 1px solid $border-float;
+  border-radius: $radius-float;
+  padding: $space-2 $space-5 $space-2 $space-2;
+  box-shadow: $shadow-raised;
+}
+.rest-timer__tile {
+  width: 48px;
+  height: 48px;
+  border-radius: $border-radius;
+  background: $tile-bg;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $primary;
+  flex: 0 0 auto;
+}
+.rest-timer__label {
+  color: $primary;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.rest-timer__value {
+  color: $text-strong;
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.stat-box {
+  background: $surface;
+  border-radius: $border-radius;
+  padding: $space-3 $space-2;
+  min-height: 100%;
+}
+.stat-icon {
+  font-size: 20px;
+  color: $primary;
+}
+
+.exercise-slide {
+  border-radius: $border-radius;
+  overflow: hidden;
+}
+.exercise-list-leave-active {
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+.exercise-list-leave-to {
+  opacity: 0;
+  transform: translateX(-100%);
+}
+.exercise-list-move {
+  transition: transform 0.25s ease;
+}
+
+.rest-box {
+  width: 88px;
+  background: $surface-variant;
+  border-radius: $border-radius;
+  padding: $space-2 0;
+}
+.delete-btn {
+  background: rgba($negative, 0.12);
+}
+
+// ── Overrides globales de Quasar ───────────────────────
+.q-btn-toggle {
+  border-radius: $radius-pill;
+}
+
+.app-header {
+  background: $surface;
+
+  .q-toolbar {
+    height: 56px;
+    min-height: 56px;
+    padding: 0 $space-4;
+  }
+}
+
+.app-footer {
+  background: $surface;
+}
+
+.q-dialog__backdrop {
+  background: $overlay;
+}
+
+.app-tab-bar {
+  height: 64px;
+
+  .q-tab__icon {
+    font-size: 24px;
+  }
+  .q-tab__label {
+    font-size: 12px;
+  }
+  .q-tab--inactive {
+    color: $text-faint;
+  }
+}
+
+.page-content .q-field--outlined .q-field__control {
+  height: 48px;
+}
+
+.full-width.q-btn:not(.q-btn--dense) {
+  min-height: 48px;
 }
 
 input[type='number'] {
@@ -26,4 +233,34 @@ input[type='number'] {
     -webkit-appearance: none;
     margin: 0;
   }
+}
+
+.brand-btn {
+  width: 40px;
+  height: 40px;
+  min-height: 0;
+  border-radius: $border-radius;
+}
+
+.toolbar-action {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 40px;
+}
+
+.form-dialog {
+  width: 360px;
+  max-width: 90vw;
+}
+.form-dialog--narrow {
+  width: 340px;
+}
+
+// ── Error pages ────────────────────────────────────────
+.error-code {
+  font-size: 30vh;
+}
+.error-subtitle {
+  opacity: 0.4;
 }

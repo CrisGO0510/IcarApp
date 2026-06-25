@@ -7,7 +7,7 @@
       no-caps
       toggle-color="primary"
       color="dark"
-      text-color="grey-4"
+      text-color="muted"
       :options="[
         { label: 'Kilogramos (kg)', value: 'metric' },
         { label: 'Libras (lbs)', value: 'imperial' },

@@ -1,17 +1,41 @@
-$primary: #3879fa;
-$secondary: #64748b;
-$accent: #2dd4bf;
+// ── Color ──────────────────────────────────────────────
+$primary: #4c8cff;
+$secondary: #26282b;
+$accent: #8a63ff;
 
-$dark-page: #171a1f;
-$dark: #1e2229;
+$dark-page: #08090b;
+$dark: #111316;
 
-$positive: #22c55e;
-$negative: #ef4444;
-$info: #3879fa;
-$warning: #f5b83d;
+$positive: #27c36a;
+$negative: #ff4d6d;
+$info: #4c8cff;
+$warning: #ffb86b;
 
 $surface: $dark;
-$surface-variant: #181b20;
-$text-strong: #f9fafb;
-$text-muted: #a1a1aa;
-$text-faint: #71717a;
+$surface-variant: #17191c;
+$surface-float: #1b1e23;
+$tile-bg: #22262c;
+$border-float: #2a2d33;
+
+$text-strong: #ffffff;
+$text-muted: #b9c0c6;
+$text-faint: #7a8187;
+
+$overlay: rgba(2, 2, 3, 0.6);
+
+// ── Espaciado ──────────────────────────────────────────
+$space-1: 4px;
+$space-2: 8px;
+$space-3: 12px;
+$space-4: 16px;
+$space-5: 20px;
+$space-6: 24px;
+$space-7: 32px;
+$space-8: 40px;
+
+// ── Forma & elevación ──────────────────────────────────
+$border-radius: 12px;
+$radius-pill: 28px;
+$radius-float: 16px;
+$shadow: 0 8px 24px rgba(11, 12, 14, 0.55);
+$shadow-raised: 0 12px 28px rgba(12, 14, 18, 0.6);

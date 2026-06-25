@@ -7,8 +7,8 @@
         :key="preset"
         :label="`${preset}s`"
         :outline="selectedPreset !== preset"
-        :color="selectedPreset === preset ? 'primary' : 'grey-8'"
-        :text-color="selectedPreset === preset ? 'white' : 'grey-4'"
+        :color="selectedPreset === preset ? 'primary' : 'secondary'"
+        :text-color="selectedPreset === preset ? 'white' : 'muted'"
         dense
         no-caps
         class="col"

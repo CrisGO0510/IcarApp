@@ -3,7 +3,7 @@
     <div class="row items-start justify-between no-wrap">
       <div>
         <q-badge outline color="primary" :label="tag" class="q-mb-sm" />
-        <div class="text-h6 text-weight-bolder">{{ workout.routineName }}</div>
+        <div class="text-h6 text-weight-bold">{{ workout.routineName }}</div>
       </div>
       <q-avatar size="36px" color="primary" text-color="dark" icon="fitness_center" />
     </div>

@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { defineStore } from 'pinia';
+import { defineStore, acceptHMRUpdate } from 'pinia';
 import type { DashboardSummary } from '../types/activity.types';
 import { buildDashboardSummary } from '../use-cases/buildDashboardSummary';
 import { dashboardMockInput } from './dashboard.mock';
@@ -22,3 +22,7 @@ export const useActivityStore = defineStore('activity', () => {
 
   return { summary, loadDashboard };
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useActivityStore, import.meta.hot));
+}

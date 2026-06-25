@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue';
-import { defineStore } from 'pinia';
+import { defineStore, acceptHMRUpdate } from 'pinia';
 import { ALL_FILTER, type ProgressRange, type VolumeFilters } from '../types/progress.types';
 import { buildProgressSummary } from '../use-cases/buildProgressSummary';
 import { progressMockInput } from './progress.mock';
@@ -27,3 +27,7 @@ export const useProgressStore = defineStore('progress', () => {
 
   return { range, filters, summary, setRange, setRoutine, setType };
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useProgressStore, import.meta.hot));
+}

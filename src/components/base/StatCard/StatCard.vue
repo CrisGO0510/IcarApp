@@ -13,7 +13,7 @@
       />
     </div>
     <div class="row items-baseline q-gutter-xs q-mt-sm">
-      <span class="text-h5 text-weight-bolder">{{ value }}</span>
+      <span class="text-display">{{ value }}</span>
       <span v-if="unit" class="text-caption text-uppercase text-primary text-weight-bold">
         {{ unit }}
       </span>

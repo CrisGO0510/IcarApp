@@ -3,13 +3,13 @@
     <div class="column q-gutter-y-md page-content">
       <div>
         <div class="text-caption text-uppercase text-primary text-weight-bold">{{ todayLabel }}</div>
-        <div class="text-h5 text-weight-bolder">{{ greeting }}</div>
+        <div class="text-h1-page">{{ greeting }}</div>
       </div>
 
       <template v-if="summary">
         <NutritionSummaryCard :summary="summary.nutrition" />
 
-        <div class="text-subtitle1 text-weight-bold">Último entrenamiento</div>
+        <div class="text-h2-section">Último entrenamiento</div>
         <LastWorkoutCard v-if="summary.lastWorkout" :workout="summary.lastWorkout" />
 
         <div class="row q-col-gutter-x-md">

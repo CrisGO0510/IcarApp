@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue';
-import { defineStore } from 'pinia';
+import { defineStore, acceptHMRUpdate } from 'pinia';
 import type { UserProfile } from '../types/profile.types';
 import { ProfileJsonRepository } from '../repositories/profile.json-repository';
 import { getProfile } from '../use-cases/getProfile';
@@ -37,3 +37,7 @@ export const useProfileStore = defineStore('profile', () => {
     saveProfile,
   };
 });
+
+if (import.meta.hot) {
+  import.meta.hot.accept(acceptHMRUpdate(useProfileStore, import.meta.hot));
+}

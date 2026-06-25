@@ -1,6 +1,7 @@
 import { computed } from 'vue';
 import type { ApexOptions } from 'apexcharts';
 import type { VolumePoint } from '../../types/progress.types';
+import { chartTheme } from '../chartTheme';
 
 interface Props {
   points: VolumePoint[];
@@ -21,29 +22,29 @@ export function useTrainingVolumeChart(props: Props) {
       parentHeightOffset: 0,
     },
     theme: { mode: 'dark' },
-    colors: ['#f5b83d', '#3879fa'],
-    stroke: { curve: 'smooth', width: 3 },
+    colors: [chartTheme.series, chartTheme.weight],
+    stroke: { curve: 'smooth', width: [chartTheme.strokeSeries, chartTheme.strokeWeight] },
     markers: { size: 4, strokeWidth: 0 },
-    grid: { borderColor: 'rgba(255,255,255,0.06)', strokeDashArray: 4 },
+    grid: { borderColor: chartTheme.grid, strokeDashArray: 4 },
     dataLabels: { enabled: false },
-    legend: { position: 'top', horizontalAlign: 'right', labels: { colors: '#a1a1aa' } },
+    legend: { position: 'top', horizontalAlign: 'right', labels: { colors: chartTheme.axisLabel } },
     xaxis: {
       categories: props.points.map((point) => point.label),
-      labels: { style: { colors: '#a1a1aa' } },
+      labels: { style: { colors: chartTheme.axisLabel } },
       axisBorder: { show: false },
       axisTicks: { show: false },
     },
     yaxis: [
       {
         seriesName: 'Series',
-        labels: { style: { colors: '#a1a1aa' } },
+        labels: { style: { colors: chartTheme.axisLabel } },
         axisBorder: { show: false },
         axisTicks: { show: false },
       },
       {
         seriesName: 'Peso [kg]',
         opposite: true,
-        labels: { style: { colors: '#a1a1aa' } },
+        labels: { style: { colors: chartTheme.axisLabel } },
         axisBorder: { show: false },
         axisTicks: { show: false },
       },

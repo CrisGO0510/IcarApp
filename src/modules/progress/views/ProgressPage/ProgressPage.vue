@@ -29,7 +29,7 @@
       />
 
       <q-card flat class="app-card">
-        <div class="text-subtitle1 text-weight-bold">Progresión de Peso</div>
+        <div class="text-h2-section">Progresión de Peso</div>
         <div class="text-caption text-muted q-mb-sm">{{ summary.weightProgression.subtitle }}</div>
         <WeightProgressionChart :points="summary.weightProgression.points" />
       </q-card>
@@ -37,7 +37,7 @@
       <q-card flat class="app-card">
         <div class="row items-start justify-between no-wrap q-mb-xs">
           <div>
-            <div class="text-subtitle1 text-weight-bold">Volumen de Entrenamiento</div>
+            <div class="text-h2-section">Volumen de Entrenamiento</div>
             <div class="text-caption text-muted">Volumen total por sesión</div>
           </div>
           <div class="column q-gutter-y-xs items-end">
@@ -88,8 +88,3 @@ const {
 } = useProgressPage();
 </script>
 
-<style scoped lang="scss">
-.volume-filter {
-  min-width: 110px;
-}
-</style>

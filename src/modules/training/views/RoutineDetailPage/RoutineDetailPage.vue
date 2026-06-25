@@ -1,0 +1,102 @@
+<template>
+  <q-page class="q-pa-md">
+    <Teleport defer to="#toolbar-action">
+      <q-btn flat dense no-caps color="primary" label="Editar" @click="goToEdit" />
+    </Teleport>
+
+    <div class="column q-gutter-y-md page-content">
+      <div class="text-h6 text-weight-bold">{{ current?.name }}</div>
+
+      <q-input v-model="query" dense outlined placeholder="Buscar ejercicio en esta rutina">
+        <template #prepend>
+          <q-icon name="search" />
+        </template>
+      </q-input>
+
+      <q-btn
+        unelevated
+        color="primary"
+        size="lg"
+        no-caps
+        icon="add"
+        label="Agregar ejercicio"
+        class="full-width"
+        @click="goToEdit"
+      />
+
+      <div class="text-caption text-uppercase text-muted">
+        Ejercicios ({{ visibleExercises.length }})
+      </div>
+
+      <template v-if="visibleExercises.length">
+        <q-slide-item
+          v-for="view in visibleExercises"
+          :key="view.pivotId"
+          right-color="positive"
+          class="exercise-slide"
+          @right="onSwipeSet(view, $event)"
+        >
+          <template #right>
+            <div class="row items-center q-gutter-x-sm">
+              <q-icon name="check" />
+              <span>Serie</span>
+            </div>
+          </template>
+          <ExerciseListItem
+            :exercise="view.exercise"
+            :caption="captionFor(view.pivotId)"
+            :status-label="statusLabelFor(view.pivotId)"
+            :status-color="statusColorFor(view.pivotId)"
+            @click="onOpenExercise(view.pivotId)"
+          />
+        </q-slide-item>
+      </template>
+      <div v-else class="text-center text-muted q-pa-lg">
+        Esta rutina aún no tiene ejercicios. Agrégalos desde "Editar".
+      </div>
+    </div>
+
+    <q-page-sticky v-if="restRunning" position="bottom-left" :offset="[16, 16]">
+      <div class="rest-timer">
+        <q-btn round unelevated class="rest-timer__tile" icon="timer" @click="stopRest" />
+        <div>
+          <div class="rest-timer__label">Descanso</div>
+          <div class="rest-timer__value">{{ restLabel }}</div>
+        </div>
+      </div>
+    </q-page-sticky>
+
+    <SetFormDialog
+      v-model="showSetDialog"
+      :exercise-name="activeExerciseName"
+      :default-reps="activeDefaults.reps"
+      :default-weight="activeDefaults.weight"
+      @submit="onSubmitSet"
+    />
+  </q-page>
+</template>
+
+<script setup lang="ts">
+import ExerciseListItem from '../../components/ExerciseListItem/ExerciseListItem.vue';
+import SetFormDialog from '../../components/SetFormDialog/SetFormDialog.vue';
+import { useRoutineDetailPage } from './RoutineDetailPage';
+
+const {
+  current,
+  visibleExercises,
+  query,
+  showSetDialog,
+  activeExerciseName,
+  activeDefaults,
+  restRunning,
+  restLabel,
+  captionFor,
+  statusLabelFor,
+  statusColorFor,
+  onSwipeSet,
+  onSubmitSet,
+  onOpenExercise,
+  stopRest,
+  goToEdit,
+} = useRoutineDetailPage();
+</script>

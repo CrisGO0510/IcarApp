@@ -1,8 +1,8 @@
 <template>
   <div class="fullscreen bg-dark text-white text-center q-pa-md flex flex-center">
     <div>
-      <div style="font-size: 30vh">404</div>
-      <div class="text-h2" style="opacity: 0.4">Página no encontrada</div>
+      <div class="error-code">404</div>
+      <div class="text-h2 error-subtitle">Página no encontrada</div>
       <q-btn
         class="q-mt-xl"
         color="primary"

@@ -1,10 +1,10 @@
 <template>
   <div class="onboarding-page q-pa-lg">
-    <div class="column q-gutter-md" style="max-width: 480px; margin: 0 auto">
+    <div class="column q-gutter-md page-content">
       <!-- Header -->
       <div class="text-center q-mb-md">
         <q-icon name="fitness_center" size="48px" color="primary" />
-        <div class="text-h5 text-weight-bold q-mt-sm">Bienvenido a IcarApp</div>
+        <div class="text-h1-page q-mt-sm">Bienvenido a IcarApp</div>
         <div class="text-body2 text-muted q-mt-xs">
           Configura tu perfil para optimizar cada una de tus repeticiones.
         </div>
@@ -104,5 +104,3 @@ const {
   handleSubmit,
 } = useOnboardingPage();
 </script>
-
-<style scoped lang="scss" src="./OnboardingPage.scss"></style>
