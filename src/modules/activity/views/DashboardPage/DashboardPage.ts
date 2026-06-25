@@ -1,14 +1,25 @@
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useActivityStore } from '../../stores/activity.store';
 import { useProfileStore } from 'src/modules/profile/stores/profile.store';
+import { useMeasurementsStore } from 'src/modules/measurements/stores/measurements.store';
+
+function todayKey(): string {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
 export function useDashboardPage() {
   const activityStore = useActivityStore();
   const profileStore = useProfileStore();
+  const measurementsStore = useMeasurementsStore();
 
   const { summary } = storeToRefs(activityStore);
   const { profile } = storeToRefs(profileStore);
+  const { latest } = storeToRefs(measurementsStore);
 
   const greeting = computed(() => (profile.value?.name ? `Hola, ${profile.value.name}` : 'Hola'));
 
@@ -30,9 +41,32 @@ export function useDashboardPage() {
     summary.value?.weeklyStats.averageWeight != null ? 'kg' : '',
   );
 
-  onMounted(() => {
-    void activityStore.loadDashboard();
+  const showWeightDialog = ref(false);
+  const currentWeight = computed(() => latest.value?.weightKg ?? null);
+
+  function openWeightDialog(): void {
+    showWeightDialog.value = true;
+  }
+
+  async function onSubmitWeight(weightKg: number): Promise<void> {
+    await measurementsStore.log({ date: todayKey(), weightKg });
+    showWeightDialog.value = false;
+  }
+
+  onMounted(async () => {
+    await activityStore.loadDashboard();
+    await measurementsStore.load();
   });
 
-  return { summary, greeting, todayLabel, weightValue, weightUnit };
+  return {
+    summary,
+    greeting,
+    todayLabel,
+    weightValue,
+    weightUnit,
+    showWeightDialog,
+    currentWeight,
+    openWeightDialog,
+    onSubmitWeight,
+  };
 }

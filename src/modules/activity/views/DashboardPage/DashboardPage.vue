@@ -28,11 +28,14 @@
               :value="weightValue"
               :unit="weightUnit"
               action-icon="add"
+              @action="openWeightDialog"
             />
           </div>
         </div>
       </template>
     </div>
+
+    <WeightLogDialog v-model="showWeightDialog" :current="currentWeight" @submit="onSubmitWeight" />
   </q-page>
 </template>
 
@@ -40,7 +43,18 @@
 import StatCard from 'src/components/base/StatCard/StatCard.vue';
 import NutritionSummaryCard from '../../components/NutritionSummaryCard/NutritionSummaryCard.vue';
 import LastWorkoutCard from '../../components/LastWorkoutCard/LastWorkoutCard.vue';
+import WeightLogDialog from 'src/modules/measurements/components/WeightLogDialog/WeightLogDialog.vue';
 import { useDashboardPage } from './DashboardPage';
 
-const { summary, greeting, todayLabel, weightValue, weightUnit } = useDashboardPage();
+const {
+  summary,
+  greeting,
+  todayLabel,
+  weightValue,
+  weightUnit,
+  showWeightDialog,
+  currentWeight,
+  openWeightDialog,
+  onSubmitWeight,
+} = useDashboardPage();
 </script>
