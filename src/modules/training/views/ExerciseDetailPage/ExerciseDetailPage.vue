@@ -41,13 +41,17 @@
           <div
             v-for="set in group.sets"
             :key="set.id"
-            class="row items-center justify-between q-py-xs"
+            class="row items-center justify-between q-py-xs cursor-pointer"
+            @click="openSet(set)"
           >
             <div class="row items-center q-gutter-x-sm no-wrap">
               <span class="icon-tile icon-tile--sm text-caption text-weight-bold">
                 {{ set.setNumber }}
               </span>
-              <span class="text-weight-medium">{{ set.weight ?? 0 }} kg</span>
+              <div class="column">
+                <span class="text-weight-medium">{{ set.weight ?? 0 }} kg</span>
+                <span v-if="set.notes" class="text-caption text-faint">{{ set.notes }}</span>
+              </div>
             </div>
             <span class="text-body2 text-muted">{{ set.reps ?? 0 }} reps</span>
           </div>
@@ -57,14 +61,33 @@
         Aún no has registrado series de este ejercicio.
       </div>
     </div>
+
+    <SetEditDialog
+      v-model="showSetDialog"
+      :set="activeSet"
+      @save="onSaveSet"
+      @remove="onRemoveSet"
+    />
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import SetEditDialog from '../../components/SetEditDialog/SetEditDialog.vue';
 import { useExerciseDetailPage } from './ExerciseDetailPage';
 
-const { exerciseName, routineName, performance, groups, goToEdit } = useExerciseDetailPage();
+const {
+  exerciseName,
+  routineName,
+  performance,
+  groups,
+  showSetDialog,
+  activeSet,
+  openSet,
+  onSaveSet,
+  onRemoveSet,
+  goToEdit,
+} = useExerciseDetailPage();
 
 function formatDelta(value: number | null, unit = ''): string {
   if (value == null || value === 0) return '';

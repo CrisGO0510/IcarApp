@@ -82,3 +82,29 @@ export function getLastSets(setRepository: ExerciseSetRepository) {
     return lastSetByExercise(await setRepository.findAll());
   };
 }
+
+export interface SetEditInput {
+  reps: number;
+  weight: number;
+  notes?: string;
+}
+
+export function updateSet(setRepository: ExerciseSetRepository) {
+  return async (id: string, input: SetEditInput): Promise<ExerciseSet> => {
+    const updated = await setRepository.update(id, {
+      reps: input.reps,
+      weight: input.weight,
+      ...(input.notes ? { notes: input.notes } : {}),
+    });
+    if (!updated) {
+      throw new Error('No se encontró la serie a actualizar.');
+    }
+    return updated;
+  };
+}
+
+export function deleteSet(setRepository: ExerciseSetRepository) {
+  return async (id: string): Promise<void> => {
+    await setRepository.delete(id);
+  };
+}
