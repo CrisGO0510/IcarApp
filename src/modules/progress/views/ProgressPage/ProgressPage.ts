@@ -1,4 +1,4 @@
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useProgressStore } from '../../stores/progress.store';
 import { PROGRESS_RANGES, type ProgressRange } from '../../types/progress.types';
@@ -6,6 +6,10 @@ import { PROGRESS_RANGES, type ProgressRange } from '../../types/progress.types'
 export function useProgressPage() {
   const store = useProgressStore();
   const { summary, range, filters } = storeToRefs(store);
+
+  onMounted(() => {
+    void store.load();
+  });
 
   const rangeOptions = PROGRESS_RANGES.map((value) => ({ label: value, value }));
 
