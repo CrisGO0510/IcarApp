@@ -60,6 +60,26 @@ const routes: RouteRecordRaw[] = [
         meta: { title: 'Rutina', back: true },
       },
       {
+        path: 'nutricion',
+        component: () => import('src/modules/nutrition/views/NutritionPage/NutritionPage.vue'),
+        meta: { title: 'Nutrición' },
+      },
+      {
+        path: 'nutricion/macros',
+        component: () => import('src/modules/nutrition/views/MacroGoalPage/MacroGoalPage.vue'),
+        meta: { title: 'Ajustar calorías y macros', back: true },
+      },
+      {
+        path: 'nutricion/comida/nueva',
+        component: () => import('src/modules/nutrition/views/MealFormPage/MealFormPage.vue'),
+        meta: { title: 'Agregar comida', back: true },
+      },
+      {
+        path: 'nutricion/comida/:id/editar',
+        component: () => import('src/modules/nutrition/views/MealFormPage/MealFormPage.vue'),
+        meta: { title: 'Editar comida', back: true },
+      },
+      {
         path: 'progreso',
         component: () => import('src/modules/progress/views/ProgressPage/ProgressPage.vue'),
         meta: { title: 'Progreso' },
