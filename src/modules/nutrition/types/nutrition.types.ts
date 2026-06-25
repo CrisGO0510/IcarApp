@@ -36,6 +36,43 @@ export interface MealEntry extends BaseEntity {
   notes?: string;
 }
 
+// ── Vistas / inputs de dominio ───────────────────────────────────────
+
+export interface MealInput {
+  date: string; // YYYY-MM-DD
+  foodName: string;
+  quantity: number;
+  unit: string;
+  protein: number;
+  carbohydrates: number;
+  fat: number;
+  calories?: number; // si se omite, se calcula 4·P + 4·C + 9·G
+  loggedAt: Date;
+  notes?: string;
+}
+
+export interface MacroGoalInput {
+  date: string; // YYYY-MM-DD
+  calorieGoal: number;
+  proteinGoal: number;
+  carbohydrateGoal: number;
+  fatGoal: number;
+}
+
+export interface MacroTotal {
+  consumed: number;
+  goal: number | null;
+}
+
+export interface NutritionDay {
+  date: string;
+  calories: MacroTotal;
+  protein: MacroTotal;
+  carbohydrates: MacroTotal;
+  fat: MacroTotal;
+  entries: MealEntry[];
+}
+
 // ── Food (reusable catalog) ──────────────────────────────────────────
 
 export interface Food extends BaseEntity {
