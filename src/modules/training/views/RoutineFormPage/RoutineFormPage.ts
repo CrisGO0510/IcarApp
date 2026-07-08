@@ -4,6 +4,7 @@ import { useQuasar } from 'quasar';
 import { storeToRefs } from 'pinia';
 import { useExerciseStore } from '../../stores/exercise.store';
 import { useRoutineStore } from '../../stores/routine.store';
+import type { Exercise } from '../../types/training.types';
 
 export function useRoutineFormPage() {
   const route = useRoute();
@@ -20,8 +21,20 @@ export function useRoutineFormPage() {
   const selectedIds = ref<string[]>([]);
   const showExerciseDialog = ref(false);
 
-  const orderedExercises = computed(() =>
-    [...exercises.value].sort((a, b) => a.name.localeCompare(b.name, 'es')),
+  const selectedExercises = computed({
+    get: () =>
+      selectedIds.value
+        .map((id) => exercises.value.find((exercise) => exercise.id === id))
+        .filter((exercise): exercise is Exercise => Boolean(exercise)),
+    set: (list: Exercise[]) => {
+      selectedIds.value = list.map((exercise) => exercise.id);
+    },
+  });
+
+  const libraryExercises = computed(() =>
+    exercises.value
+      .filter((exercise) => !selectedIds.value.includes(exercise.id))
+      .sort((a, b) => a.name.localeCompare(b.name, 'es')),
   );
 
   function isSelected(id: string): boolean {
@@ -56,9 +69,7 @@ export function useRoutineFormPage() {
       return;
     }
 
-    const orderedIds = orderedExercises.value
-      .map((exercise) => exercise.id)
-      .filter((id) => selectedIds.value.includes(id));
+    const orderedIds = selectedExercises.value.map((exercise) => exercise.id);
 
     try {
       if (isEdit.value && routineId.value) {
@@ -86,9 +97,9 @@ export function useRoutineFormPage() {
 
   return {
     name,
-    orderedExercises,
+    selectedExercises,
+    libraryExercises,
     showExerciseDialog,
-    isSelected,
     toggle,
     openExerciseDialog,
     onCreateExercise,

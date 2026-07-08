@@ -56,7 +56,8 @@ Registro de atajos temporales que deben reemplazarse. Lo pendiente se rastrea aq
 - **Qué:** `getProgressInput` arma `SessionVolume.type` con el **nombre del ejercicio**, porque `Exercise` no tiene taxonomía de grupo muscular. El filtro "Tipo" de la pantalla de Progreso lista ejercicios, no grupos (Torso/Pierna…).
 - **Por qué:** No existe un campo de categoría/grupo muscular en `Exercise`; el diseño de Visily muestra grupos, pero no hay datos para derivarlos.
 - **Reemplazo:** Agregar `category`/`muscleGroup` a `Exercise` (con UI para asignarlo) y usarlo como `type` del volumen.
-- **Estado:** Pendiente.
+- **Estado:** Resuelto (decisión de producto, 2026-07-07). El filtro "Tipo" queda por
+  ejercicio; no habrá taxonomía de grupos musculares — no es el enfoque de la app.
 
 ## Plataforma Android de Capacitor sin reconfigurar
 
@@ -64,3 +65,17 @@ Registro de atajos temporales que deben reemplazarse. Lo pendiente se rastrea aq
 - **Por qué:** La migración cambió la ubicación y el modo de gestionar Capacitor; re-agregar la plataforma requiere el Android SDK instalado.
 - **Reemplazo:** Ejecutar `npx cap add android` en la raíz (con Android SDK disponible), verificar `pnpm build && pnpm cap:sync` y `pnpm cap:android`, y luego eliminar el `src-capacitor/` huérfano.
 - **Estado:** Pendiente.
+
+## `createdAt` de ExerciseSet es la fecha de realización (editable)
+
+- **Qué:** La pantalla "Editar serie" permite cambiar fecha/hora de una serie mutando
+  `createdAt` (`ExerciseSetJsonRepository` overridea `update` para permitirlo). Para
+  `ExerciseSet`, `createdAt` significa "cuándo se realizó la serie" y no es auditoría pura.
+  Si el cambio cruza de día, la serie se reasigna a la sesión de ese día (se crea si falta y
+  la sesión origen se elimina si queda vacía).
+- **Por qué:** Se decidió no agregar un campo `performedAt` separado (spec
+  2026-07-07-editar-serie-y-reordenar-ejercicios-design.md): todo el historial, deltas,
+  dashboard y Progreso ya derivan de `createdAt`.
+- **Reemplazo:** Si algún día se necesita auditoría real de series, separar en `performedAt`
+  y restaurar la semántica de `createdAt`.
+- **Estado:** Decisión vigente (no es deuda activa).

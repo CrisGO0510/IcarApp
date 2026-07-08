@@ -23,19 +23,39 @@
 
       <div>
         <div class="text-caption text-uppercase text-muted q-mb-sm">
-          Mis ejercicios ({{ orderedExercises.length }})
+          En la rutina ({{ selectedExercises.length }})
         </div>
-        <div v-if="orderedExercises.length" class="column q-gutter-y-sm">
+        <draggable
+          v-if="selectedExercises.length"
+          v-model="selectedExercises"
+          item-key="id"
+          handle=".drag-handle"
+          class="column q-gutter-y-sm"
+        >
+          <template #item="{ element }">
+            <ExerciseSelectItem :exercise="element" selected handle @toggle="toggle(element.id)" />
+          </template>
+        </draggable>
+        <div v-else class="text-center text-muted q-pa-lg">
+          Marca ejercicios de la biblioteca para agregarlos.
+        </div>
+      </div>
+
+      <div>
+        <div class="text-caption text-uppercase text-muted q-mb-sm">
+          Biblioteca ({{ libraryExercises.length }})
+        </div>
+        <div v-if="libraryExercises.length" class="column q-gutter-y-sm">
           <ExerciseSelectItem
-            v-for="exercise in orderedExercises"
+            v-for="exercise in libraryExercises"
             :key="exercise.id"
             :exercise="exercise"
-            :selected="isSelected(exercise.id)"
+            :selected="false"
             @toggle="toggle(exercise.id)"
           />
         </div>
         <div v-else class="text-center text-muted q-pa-lg">
-          No hay ejercicios. Agrega uno nuevo.
+          No hay más ejercicios. Agrega uno nuevo.
         </div>
       </div>
     </div>
@@ -45,15 +65,16 @@
 </template>
 
 <script setup lang="ts">
+import draggable from 'vuedraggable';
 import ExerciseSelectItem from '../../components/ExerciseSelectItem/ExerciseSelectItem.vue';
 import ExerciseFormDialog from '../../components/ExerciseFormDialog/ExerciseFormDialog.vue';
 import { useRoutineFormPage } from './RoutineFormPage';
 
 const {
   name,
-  orderedExercises,
+  selectedExercises,
+  libraryExercises,
   showExerciseDialog,
-  isSelected,
   toggle,
   openExerciseDialog,
   onCreateExercise,

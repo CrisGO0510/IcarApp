@@ -179,6 +179,12 @@
 .delete-btn {
   background: rgba($negative, 0.12);
 }
+.drag-handle {
+  cursor: grab;
+  touch-action: none;
+  padding: $space-3;
+  margin: (-$space-3) 0 (-$space-3) (-$space-3);
+}
 
 // ── Overrides globales de Quasar ───────────────────────
 .q-btn-toggle {

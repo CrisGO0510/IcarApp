@@ -4,6 +4,7 @@ import type { ExerciseSet, SetDayGroup } from '../types/training.types';
 import { WorkoutSessionJsonRepository } from '../repositories/workout-session.json-repository';
 import { ExerciseSetJsonRepository } from '../repositories/exercise-set.json-repository';
 import { RoutineExerciseJsonRepository } from '../repositories/routine-exercise.json-repository';
+import { ExerciseJsonRepository } from '../repositories/exercise.json-repository';
 import {
   logSet,
   getLastSets,
@@ -15,17 +16,20 @@ import {
 } from '../use-cases/workoutSession';
 import { groupSetsByDay } from '../use-cases/exerciseHistory';
 import { findSetsByExerciseId } from '../use-cases/findSetsByExerciseId';
+import { getSetDetail, type SetDetail } from '../use-cases/getSetDetail';
 
 export const useWorkoutStore = defineStore('workout', () => {
   const sessionRepo = new WorkoutSessionJsonRepository();
   const setRepo = new ExerciseSetJsonRepository();
   const pivotRepo = new RoutineExerciseJsonRepository();
+  const exerciseRepo = new ExerciseJsonRepository();
 
   const _log = logSet(sessionRepo, setRepo);
   const _lastSets = getLastSets(setRepo);
   const _lastSet = getLastSet(setRepo);
-  const _updateSet = updateSet(setRepo);
-  const _deleteSet = deleteSet(setRepo);
+  const _updateSet = updateSet(sessionRepo, setRepo, pivotRepo);
+  const _deleteSet = deleteSet(sessionRepo, setRepo);
+  const _setDetail = getSetDetail(setRepo, pivotRepo, exerciseRepo);
 
   const lastSets = ref<Record<string, ExerciseSet>>({});
   const history = ref<SetDayGroup[]>([]);
@@ -63,20 +67,18 @@ export const useWorkoutStore = defineStore('workout', () => {
     await loadLastSets();
   }
 
-  async function editSet(
-    routineExerciseId: string,
-    id: string,
-    input: SetEditInput,
-  ): Promise<void> {
+  async function editSet(id: string, input: SetEditInput): Promise<void> {
     await _updateSet(id, input);
-    await loadHistory(routineExerciseId);
     await loadLastSets();
   }
 
-  async function removeSet(routineExerciseId: string, id: string): Promise<void> {
+  async function removeSet(id: string): Promise<void> {
     await _deleteSet(id);
-    await loadHistory(routineExerciseId);
     await loadLastSets();
+  }
+
+  async function setDetail(id: string): Promise<SetDetail> {
+    return _setDetail(id);
   }
 
   function stopRest(): void {
@@ -112,6 +114,7 @@ export const useWorkoutStore = defineStore('workout', () => {
     logExerciseSet,
     editSet,
     removeSet,
+    setDetail,
     startRest,
     stopRest,
   };

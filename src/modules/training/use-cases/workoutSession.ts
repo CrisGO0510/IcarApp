@@ -1,12 +1,22 @@
 import type {
   WorkoutSessionRepository,
   ExerciseSetRepository,
+  RoutineExerciseRepository,
 } from '../repositories/training.repository.port';
 import type { ExerciseSet, WorkoutSession } from '../types/training.types';
 
 export interface SetInput {
   reps: number;
   weight: number;
+}
+
+const SET_NOT_FOUND_MESSAGE = 'No se encontró la serie a actualizar.';
+
+function nextSetNumber(sets: ExerciseSet[], routineExerciseId: string): number {
+  const numbers = sets
+    .filter((set) => set.routineExerciseId === routineExerciseId)
+    .map((set) => set.setNumber);
+  return Math.max(0, ...numbers) + 1;
 }
 
 function isSameDay(a: Date, b: Date): boolean {
@@ -28,13 +38,13 @@ export function lastSetByExercise(sets: ExerciseSet[]): Record<string, ExerciseS
   return latest;
 }
 
-async function findTodaySession(
+async function findSessionOnDay(
   sessionRepository: WorkoutSessionRepository,
   routineId: string,
-  now: Date,
+  day: Date,
 ): Promise<WorkoutSession | null> {
   const sessions = await sessionRepository.findByRoutine(routineId);
-  return sessions.find((session) => isSameDay(session.startedAt, now)) ?? null;
+  return sessions.find((session) => isSameDay(session.startedAt, day)) ?? null;
 }
 
 export function logSet(
@@ -47,14 +57,13 @@ export function logSet(
     input: SetInput,
     now: Date,
   ): Promise<ExerciseSet> => {
-    const existing = await findTodaySession(sessionRepository, routineId, now);
+    const existing = await findSessionOnDay(sessionRepository, routineId, now);
     const session =
       existing ??
       (await sessionRepository.create({ routineId, startedAt: now, isCompleted: false }));
 
     const sessionSets = await setRepository.findBySession(session.id);
-    const setNumber =
-      sessionSets.filter((set) => set.routineExerciseId === routineExerciseId).length + 1;
+    const setNumber = nextSetNumber(sessionSets, routineExerciseId);
 
     return setRepository.create({
       workoutSessionId: session.id,
@@ -87,24 +96,73 @@ export interface SetEditInput {
   reps: number;
   weight: number;
   notes?: string;
+  performedAt: Date;
 }
 
-export function updateSet(setRepository: ExerciseSetRepository) {
+export function updateSet(
+  sessionRepository: WorkoutSessionRepository,
+  setRepository: ExerciseSetRepository,
+  pivotRepository: RoutineExerciseRepository,
+) {
   return async (id: string, input: SetEditInput): Promise<ExerciseSet> => {
-    const updated = await setRepository.update(id, {
+    const current = await setRepository.findById(id);
+    if (!current) {
+      throw new Error(SET_NOT_FOUND_MESSAGE);
+    }
+
+    const changes: Partial<ExerciseSet> = {
       reps: input.reps,
       weight: input.weight,
-      ...(input.notes ? { notes: input.notes } : {}),
-    });
-    if (!updated) {
-      throw new Error('No se encontró la serie a actualizar.');
+      notes: input.notes?.trim() || null,
+      createdAt: input.performedAt,
+    };
+
+    if (!isSameDay(current.createdAt, input.performedAt)) {
+      const pivot = await pivotRepository.findById(current.routineExerciseId);
+      if (!pivot) {
+        throw new Error('No se encontró el ejercicio de la serie.');
+      }
+      const target =
+        (await findSessionOnDay(sessionRepository, pivot.routineId, input.performedAt)) ??
+        (await sessionRepository.create({
+          routineId: pivot.routineId,
+          startedAt: input.performedAt,
+          isCompleted: false,
+        }));
+      const targetSets = await setRepository.findBySession(target.id);
+      changes.workoutSessionId = target.id;
+      changes.setNumber = nextSetNumber(targetSets, current.routineExerciseId);
     }
+
+    const updated = await setRepository.update(id, changes);
+    if (!updated) {
+      throw new Error(SET_NOT_FOUND_MESSAGE);
+    }
+
+    if (updated.workoutSessionId !== current.workoutSessionId) {
+      const remaining = await setRepository.findBySession(current.workoutSessionId);
+      if (remaining.length === 0) {
+        await sessionRepository.delete(current.workoutSessionId);
+      }
+    }
+
     return updated;
   };
 }
 
-export function deleteSet(setRepository: ExerciseSetRepository) {
+export function deleteSet(
+  sessionRepository: WorkoutSessionRepository,
+  setRepository: ExerciseSetRepository,
+) {
   return async (id: string): Promise<void> => {
+    const current = await setRepository.findById(id);
+    if (!current) return;
+
     await setRepository.delete(id);
+
+    const remaining = await setRepository.findBySession(current.workoutSessionId);
+    if (remaining.length === 0) {
+      await sessionRepository.delete(current.workoutSessionId);
+    }
   };
 }

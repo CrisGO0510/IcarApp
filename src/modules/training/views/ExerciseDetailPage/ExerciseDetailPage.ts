@@ -1,7 +1,6 @@
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { useQuasar } from 'quasar';
 import { useRoutineStore } from '../../stores/routine.store';
 import { useWorkoutStore } from '../../stores/workout.store';
 import { summarizePerformance } from '../../use-cases/exerciseHistory';
@@ -11,7 +10,6 @@ import type { ExerciseSet } from '../../types/training.types';
 export function useExerciseDetailPage() {
   const route = useRoute();
   const router = useRouter();
-  const $q = useQuasar();
   const routineStore = useRoutineStore();
   const workoutStore = useWorkoutStore();
 
@@ -33,34 +31,8 @@ export function useExerciseDetailPage() {
     history.value.map((group) => ({ ...group, label: dayLabelEs(group.date, new Date()) })),
   );
 
-  const showSetDialog = ref(false);
-  const activeSet = ref<ExerciseSet | null>(null);
-
   function openSet(set: ExerciseSet): void {
-    activeSet.value = set;
-    showSetDialog.value = true;
-  }
-
-  async function onSaveSet(payload: { reps: number; weight: number; notes: string }): Promise<void> {
-    if (!activeSet.value) return;
-    await workoutStore.editSet(pivotId.value, activeSet.value.id, payload);
-    showSetDialog.value = false;
-  }
-
-  function onRemoveSet(): void {
-    const set = activeSet.value;
-    if (!set) return;
-    $q.dialog({
-      title: 'Eliminar serie',
-      message: 'Esta acción es irreversible. ¿Eliminar la serie?',
-      cancel: { flat: true, noCaps: true, label: 'Cancelar' },
-      ok: { unelevated: true, noCaps: true, color: 'negative', label: 'Eliminar' },
-      dark: true,
-    }).onOk(() => {
-      void workoutStore.removeSet(pivotId.value, set.id).then(() => {
-        showSetDialog.value = false;
-      });
-    });
+    void router.push(`/entreno/series/${set.id}/editar`);
   }
 
   function goToEdit(): void {
@@ -84,11 +56,7 @@ export function useExerciseDetailPage() {
     routineName,
     performance,
     groups,
-    showSetDialog,
-    activeSet,
     openSet,
-    onSaveSet,
-    onRemoveSet,
     goToEdit,
   };
 }

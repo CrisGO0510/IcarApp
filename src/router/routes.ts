@@ -60,6 +60,11 @@ const routes: RouteRecordRaw[] = [
         meta: { title: 'Rutina', back: true },
       },
       {
+        path: 'entreno/series/:setId/editar',
+        component: () => import('src/modules/training/views/SetEditPage/SetEditPage.vue'),
+        meta: { title: 'Editar serie', back: true },
+      },
+      {
         path: 'nutricion',
         component: () => import('src/modules/nutrition/views/NutritionPage/NutritionPage.vue'),
         meta: { title: 'Nutrición' },

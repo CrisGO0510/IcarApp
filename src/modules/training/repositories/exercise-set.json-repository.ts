@@ -19,4 +19,26 @@ export class ExerciseSetJsonRepository
     const all = await this.findAll();
     return all.filter((set) => set.routineExerciseId === routineExerciseId);
   }
+
+  public override async update(
+    id: string,
+    data: Partial<ExerciseSet>,
+  ): Promise<ExerciseSet | null> {
+    const items = await this.loadAll();
+    const idx = items.findIndex((set) => set.id === id && !set.deletedAt);
+    if (idx === -1) return null;
+
+    const current = items[idx]!;
+    const changes = { ...data };
+    delete changes.deletedAt;
+    const merged: ExerciseSet = {
+      ...current,
+      ...changes,
+      id: current.id,
+      updatedAt: new Date(),
+    };
+    items[idx] = merged;
+    await this.saveAll(items);
+    return merged;
+  }
 }

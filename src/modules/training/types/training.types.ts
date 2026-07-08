@@ -82,6 +82,6 @@ export interface ExerciseSet extends BaseEntity {
   distance?: number; // meters (cardio)
   restTime?: number; // seconds
   rpe?: number; // 1-10
-  notes?: string;
+  notes?: string | null;
   isCompleted: boolean;
 }

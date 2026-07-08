@@ -38,13 +38,19 @@
           <div
             v-for="set in group.sets"
             :key="set.id"
-            class="row items-center justify-between q-py-xs"
+            class="row items-center justify-between q-py-xs cursor-pointer"
+            role="button"
+            tabindex="0"
+            @click="openSet(set)"
           >
             <div class="row items-center q-gutter-x-sm no-wrap">
               <span class="icon-tile icon-tile--sm text-caption text-weight-bold">
                 {{ set.setNumber }}
               </span>
-              <span class="text-weight-medium">{{ set.weight ?? 0 }} kg</span>
+              <div class="column">
+                <span class="text-weight-medium">{{ set.weight ?? 0 }} kg</span>
+                <span v-if="set.notes" class="text-caption text-faint">{{ set.notes }}</span>
+              </div>
             </div>
             <span class="text-body2 text-muted">{{ set.reps ?? 0 }} reps</span>
           </div>
@@ -61,7 +67,7 @@
 import { computed } from 'vue';
 import { useExerciseHistoryPage } from './ExerciseHistoryPage';
 
-const { exerciseName, performance, groups, goToEdit } = useExerciseHistoryPage();
+const { exerciseName, performance, groups, goToEdit, openSet } = useExerciseHistoryPage();
 
 function formatDelta(value: number | null, unit = ''): string {
   if (value == null || value === 0) return '';

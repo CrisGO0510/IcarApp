@@ -5,6 +5,7 @@ import { useExerciseStore } from '../../stores/exercise.store';
 import { useWorkoutStore } from '../../stores/workout.store';
 import { summarizePerformance } from '../../use-cases/exerciseHistory';
 import { dayLabelEs } from 'src/core/utils/relativeTime';
+import type { ExerciseSet } from '../../types/training.types';
 
 export function useExerciseHistoryPage() {
   const route = useRoute();
@@ -31,6 +32,10 @@ export function useExerciseHistoryPage() {
     void router.push(`/entreno/ejercicios/${exerciseId.value}/editar`);
   }
 
+  function openSet(set: ExerciseSet): void {
+    void router.push(`/entreno/series/${set.id}/editar`);
+  }
+
   onMounted(async () => {
     try {
       await exerciseStore.load();
@@ -40,5 +45,5 @@ export function useExerciseHistoryPage() {
     }
   });
 
-  return { exerciseName, performance, groups, goToEdit };
+  return { exerciseName, performance, groups, goToEdit, openSet };
 }

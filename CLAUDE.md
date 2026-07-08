@@ -4,20 +4,26 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-IcarApp is an offline-first hybrid mobile app for workout and nutrition tracking. Built with Vue 3 + Quasar Framework + Capacitor, persisting data locally via **Capacitor Preferences** (JSON blobs). No backend — all data stays on-device. See `docs/` for full vision, requirements, flows, and architecture decisions (docs are in **Spanish**).
+IcarApp is an offline-first hybrid mobile app for workout and nutrition tracking. Built with Vue 3 + **Vite** + **Quasar as a Vite plugin** (`@quasar/vite-plugin`) + Capacitor, persisting data locally via **Capacitor Preferences** (JSON blobs). No backend — all data stays on-device. See `docs/` for full vision, requirements, flows, and architecture decisions (docs are in **Spanish**).
 
-> The project originally targeted SQLite (see `docs/`/git history) but migrated to Capacitor Preferences (commit "Cambiamos a capacitor preference"). There is no SQLite, no migrations, and no `schema_version` table — ignore any SQLite references in older docs.
+> The project originally targeted SQLite (migrated to Capacitor Preferences — commit "Cambiamos a capacitor preference"; no SQLite/migrations/`schema_version`), and originally used the Quasar CLI (`@quasar/app-vite`) — it was migrated to a plain **Vite + `@quasar/vite-plugin`** setup (like the `linktic/banco` project). Ignore SQLite and `quasar dev`/`quasar.config.ts` references in older docs.
+
+## Build system (Vite + Quasar plugin)
+
+- Entry: `index.html` → `src/main.ts` (creates the app, installs `Quasar` with `config.dark`, Pinia, and the router).
+- `vite.config.ts` wires `@vitejs/plugin-vue` + `quasar({ sassVariables })` and the path aliases (`src`, `layouts`, `components`, `assets`, `boot`, `stores`).
+- `tsconfig.json` is standalone (no `.quasar/`): keeps strict flags and the aliases as `paths`. Quasar global component types come from `types: ["quasar"]` + `env.d.ts`.
+- Router uses `createWebHashHistory` (hash mode) directly; Pinia via `createPinia()` in `main.ts` (no `#q-app/wrappers`, no `boot/` files).
 
 ## Commands
 
-- **Dev server:** `quasar dev`
-- **Build:** `quasar build`
+- **Dev server:** `pnpm dev` (Vite, port 9000)
+- **Build:** `pnpm build` (`vue-tsc --noEmit && vite build` → `dist/`)
+- **Preview:** `pnpm preview`
 - **Lint:** `pnpm lint`
 - **Format:** `pnpm format`
-- **Capacitor dev (Android):** `quasar dev -m capacitor -T android`
-- **Capacitor build (Android):** `quasar build -m capacitor -T android`
-
-No test framework is configured yet — `pnpm test` is a no-op placeholder (`echo ... && exit 0`).
+- **Tests:** `pnpm test` (Vitest), `pnpm test:coverage`
+- **Capacitor (Android):** `pnpm cap:sync` / `pnpm cap:android` (Capacitor CLI, `webDir: dist`). See `docs/deuda-tecnica.md` — the Android platform still needs re-adding at the repo root (`npx cap add android`); the old Quasar-managed `src-capacitor/` is orphaned.
 
 ## Architecture (Hexagonal + Repository Pattern)
 
@@ -37,7 +43,7 @@ JSON Adapter (class extends JsonRepository<T>) — concrete implementation
 Capacitor Preferences (one JSON array per storageKey)
 ```
 
-The `profile` module is the only fully-wired vertical slice (use-cases → store → repository adapter → view); use it as the reference template. `training`, `nutrition`, and `activity` currently have only `types/` and (for training/nutrition) port interfaces — no adapters, stores, or use-cases yet.
+The `profile` module is a fully-wired vertical slice (use-cases → store → repository adapter → view); use it as the reference template. `training` has real persistence for its **exercise library** (`ExerciseJsonRepository` + `exercise.store` + `ExerciseLibraryPage`) and **routines** (`RoutineJsonRepository` + `RoutineExerciseJsonRepository` + `routine.store` + routines list/detail/form pages, with in-memory joins of the routine↔exercise pivot at the use-case level); its workout sessions/sets parts still have only `types/` + port. `nutrition` still has only `types/` + port. `activity` and `progress` are computed/mock-fed (no persistence).
 
 **Hexagonal rules:**
 - Use cases are **functions** (not classes) that receive the repository port as argument and return an async operation — aligns with Composition API style (see `src/modules/profile/use-cases/`)
@@ -50,10 +56,11 @@ The `profile` module is the only fully-wired vertical slice (use-cases → store
 ## Module Organization
 
 Domain modules in `src/modules/`:
-- `training/` — routines, exercises, workout sessions, sets (types + port only)
+- `training/` — routines, exercises, workout sessions, sets. **Exercise library** (incl. an exercise-edit screen: rename, per-exercise rest time `Exercise.restTime`, delete — reached by tapping an exercise in the library or routine detail), **routines** and **set logging** implemented (real persistence: adapters + stores + use-cases + pages; exercise library seeds ~10 starter exercises on first run; routines have list/detail/create-edit; routine detail logs sets via right-to-left swipe → reps/weight dialog → `ExerciseSet` in the day's `WorkoutSession`, with a countdown rest timer using `exercise.restTime ?? profile.defaultRestTime`; tapping an exercise opens an **exercise-detail** screen with a performance summary (series/reps/volume deltas vs the previous session) + per-day set history, and its "Editar" leads to the exercise-edit screen; tapping a set (in the exercise-detail screen or the library's exercise history) opens a **set-edit screen** (`entreno/series/:setId/editar`: reps, weight, date/time — cross-day moves reassign the session —, notes, delete; replaced the old `SetEditDialog`), and routine-form exercises support **drag & drop ordering** (two sections: ordered "En la rutina" + alphabetical "Biblioteca", via `vuedraggable`)). Session close (`completedAt`) still pending (see `docs/deuda-tecnica.md`)
 - `nutrition/` — meals, meal entries, foods, macro goals (types + port only)
 - `profile/` — user profile (fully implemented)
 - `activity/` — dashboard summaries (computed, not persisted)
+- `progress/` — progress analytics over time: body-weight + training-volume charts via ApexCharts (computed, mock-fed — see `docs/deuda-tecnica.md`)
 
 A module may contain any of: `components/`, `composables/`, `use-cases/`, `views/`, `repositories/`, `stores/`, `types/` — create subdirs as the module needs them, don't scaffold empties.
 
@@ -68,6 +75,7 @@ No `entities/` (types cover this) or `services/` (use cases replace this).
 
 - All entities use UUID primary keys (`crypto.randomUUID()`), generated in `JsonRepository.create()`
 - Audit fields are **camelCase** on entities: `createdAt`, `updatedAt`, `deletedAt: Date` (these are real `Date` objects in memory, serialized to ISO strings in storage)
+- Exception: for `ExerciseSet`, `createdAt` means "when the set was performed" and is editable from the set-edit screen (`ExerciseSetJsonRepository` overrides `update` to allow it; moving a set across days reassigns its `WorkoutSession`)
 - **Soft deletes**: `delete()` sets `deletedAt`; all reads (`findById`, `findAll`, `count`) filter out soft-deleted rows
 - Dates must round-trip through JSON: `deserialize()` rehydrates ISO strings back into `Date`. If an entity adds new `Date` fields beyond the audit ones, override `deserialize`/`serialize` in its adapter (see how `profile` could extend it).
 - `QueryOptions` (`orderBy`, `orderDirection`, `limit`, `offset`) are applied in-memory in `findAll`
