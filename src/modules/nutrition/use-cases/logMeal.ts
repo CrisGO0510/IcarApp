@@ -1,6 +1,6 @@
 import type { MealEntryRepository } from '../repositories/nutrition.repository.port';
 import type { MealEntry, MealInput } from '../types/nutrition.types';
-import { computeCalories } from './computeCalories';
+import { resolveMealCalories } from './resolveMealCalories';
 
 export function logMeal(repository: MealEntryRepository) {
   return async (input: MealInput): Promise<MealEntry> => {
@@ -12,8 +12,12 @@ export function logMeal(repository: MealEntryRepository) {
       throw new Error('La cantidad no puede ser negativa.');
     }
 
-    const calories =
-      input.calories ?? computeCalories(input.protein, input.carbohydrates, input.fat);
+    const calories = resolveMealCalories(
+      input.calories,
+      input.protein,
+      input.carbohydrates,
+      input.fat,
+    );
 
     return repository.create({
       date: input.date,

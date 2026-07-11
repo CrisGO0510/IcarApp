@@ -22,18 +22,7 @@
 
       <UnitSystemToggle v-model="form.unitSystem" />
 
-      <div class="row q-gutter-sm">
-        <div class="col">
-          <FieldLabel>MANTENIMIENTO</FieldLabel>
-          <q-input
-            v-model.number="form.maintenanceCalories"
-            type="number"
-            dense
-            outlined
-            suffix="kcal"
-            :error="submitted && !isPositive(form.maintenanceCalories)"
-          />
-        </div>
+      <div class="row q-col-gutter-sm">
         <div class="col">
           <FieldLabel>PESO ACTUAL</FieldLabel>
           <q-input
@@ -45,17 +34,48 @@
             :error="submitted && !isPositive(form.weight)"
           />
         </div>
+        <div class="col">
+          <FieldLabel>ALTURA</FieldLabel>
+          <q-input
+            v-model.number="form.height"
+            type="number"
+            dense
+            outlined
+            :suffix="heightSuffix"
+            :error="submitted && !isPositive(form.height)"
+          />
+        </div>
       </div>
 
       <div>
-        <FieldLabel>ALTURA</FieldLabel>
+        <FieldLabel>FECHA DE NACIMIENTO</FieldLabel>
         <q-input
-          v-model.number="form.height"
-          type="number"
+          :model-value="form.birthDate"
           dense
           outlined
-          :suffix="heightSuffix"
-          :error="submitted && !isPositive(form.height)"
+          readonly
+          class="cursor-pointer"
+          aria-label="Fecha de nacimiento"
+        >
+          <template #append>
+            <q-icon name="event" />
+          </template>
+          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+            <q-date v-model="form.birthDate" :mask="dateKeyMask" :options="dateOptions" />
+          </q-popup-proxy>
+        </q-input>
+      </div>
+
+      <div>
+        <FieldLabel>SEXO</FieldLabel>
+        <q-select
+          v-model="form.sex"
+          :options="sexOptions"
+          emit-value
+          map-options
+          dense
+          outlined
+          aria-label="Sexo"
         />
       </div>
 
@@ -79,6 +99,17 @@ import RestTimeSelector from '../../components/RestTimeSelector/RestTimeSelector
 import UnitSystemToggle from '../../components/UnitSystemToggle/UnitSystemToggle.vue';
 import { useSettingsPage } from './SettingsPage';
 
-const { form, restTime, submitted, saving, weightSuffix, heightSuffix, isPositive, save } =
-  useSettingsPage();
+const {
+  form,
+  restTime,
+  submitted,
+  saving,
+  weightSuffix,
+  heightSuffix,
+  isPositive,
+  save,
+  sexOptions,
+  dateOptions,
+  dateKeyMask,
+} = useSettingsPage();
 </script>

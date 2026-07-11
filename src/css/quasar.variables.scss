@@ -11,8 +11,8 @@ $negative: #ff4d6d;
 $info: #4c8cff;
 $warning: #ffb86b;
 
-$surface: $dark;
-$surface-variant: #17191c;
+$surface: #1e2229;
+$surface-variant: #181b20;
 $surface-float: #1b1e23;
 $tile-bg: #22262c;
 $border-float: #2a2d33;
@@ -35,6 +35,7 @@ $space-8: 40px;
 
 // ── Forma & elevación ──────────────────────────────────
 $border-radius: 12px;
+$radius-control: 16px;
 $radius-pill: 28px;
 $radius-float: 16px;
 $shadow: 0 8px 24px rgba(11, 12, 14, 0.55);

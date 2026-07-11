@@ -36,6 +36,36 @@ export interface MealEntry extends BaseEntity {
   notes?: string;
 }
 
+// ── Activity Entry ───────────────────────────────────────────────────
+
+export const ACTIVITY_TYPES = [
+  'Correr',
+  'Caminar',
+  'Ciclismo',
+  'Natación',
+  'Pesas',
+  'Otro',
+] as const;
+export const OTHER_ACTIVITY_TYPE: (typeof ACTIVITY_TYPES)[number] = 'Otro';
+
+export const DATE_QUERY_PARAM = 'fecha';
+
+export interface ActivityEntry extends BaseEntity {
+  date: string; // YYYY-MM-DD
+  type: string;
+  caloriesBurned: number;
+  durationMinutes: number;
+  loggedAt: Date;
+}
+
+export interface ActivityInput {
+  date: string; // YYYY-MM-DD
+  type: string;
+  caloriesBurned: number;
+  durationMinutes: number;
+  loggedAt: Date;
+}
+
 // ── Vistas / inputs de dominio ───────────────────────────────────────
 
 export interface MealInput {
@@ -71,6 +101,9 @@ export interface NutritionDay {
   carbohydrates: MacroTotal;
   fat: MacroTotal;
   entries: MealEntry[];
+  burned: number;
+  remaining: number | null;
+  activities: ActivityEntry[];
 }
 
 // ── Food (reusable catalog) ──────────────────────────────────────────

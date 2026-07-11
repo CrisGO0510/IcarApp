@@ -6,7 +6,7 @@
         <div class="app-card">
           <div class="row items-center q-gutter-sm q-mb-md">
             <q-icon name="local_fire_department" color="primary" size="22px" />
-            <span class="text-h2-section">Calorías de mantenimiento</span>
+            <span class="text-h2-section">Gasto calórico diario</span>
           </div>
           <div class="surface-card surface-card--bordered">
             <div class="row items-center justify-between no-wrap">
@@ -23,7 +23,17 @@
             </div>
           </div>
           <div class="text-small text-faint q-mt-sm">
-            Usa tus calorías de mantenimiento como punto de partida.
+            ¿Quieres un valor estimado?
+            <q-btn
+              flat
+              dense
+              no-caps
+              size="sm"
+              color="primary"
+              label="Calcúlalo aquí"
+              aria-label="Calcular valor estimado"
+              @click="showTmbCalculator = true"
+            />
           </div>
         </div>
       </div>
@@ -33,10 +43,8 @@
           <span class="text-micro text-uppercase text-muted">Repartición de macros</span>
           <q-btn-toggle
             v-model="unit"
-            :options="[
-              { label: '%', value: '%' },
-              { label: 'Gramos', value: 'g' },
-            ]"
+            :options="unitOptions"
+            class="unit-toggle"
             dense
             no-caps
             unelevated
@@ -52,12 +60,33 @@
               <div class="row items-center q-gutter-xs">
                 <q-icon name="set_meal" color="negative" size="18px" />
                 <span class="text-body">Proteína</span>
+                <q-icon name="info_outline" size="14px" class="text-faint cursor-pointer">
+                  <q-tooltip>1 g de proteína = {{ kcalPerGram.protein }} kcal</q-tooltip>
+                </q-icon>
               </div>
-              <span class="text-body text-weight-bold">
-                {{ displayValue(proteinPct, proteinGrams) }}
-              </span>
+              <div class="row items-center q-gutter-x-sm no-wrap">
+                <span class="text-small text-faint">{{ proteinEquivalent }}</span>
+                <q-input
+                  v-model.number="proteinValue"
+                  type="number"
+                  min="0"
+                  dense
+                  borderless
+                  class="macro-value-input"
+                  input-class="text-body text-weight-bold text-right"
+                  :suffix="unitSuffix"
+                  aria-label="Proteína"
+                />
+              </div>
             </div>
-            <q-slider v-model="proteinPct" :min="0" :max="100" color="primary" />
+            <q-slider
+              v-model="proteinPct"
+              :min="0"
+              :max="100"
+              :inner-max="proteinMax"
+              :color="proteinColor"
+              @pan="(phase) => onSliderPan('protein', phase)"
+            />
           </div>
 
           <div>
@@ -65,12 +94,33 @@
               <div class="row items-center q-gutter-xs">
                 <q-icon name="bakery_dining" color="warning" size="18px" />
                 <span class="text-body">Carbohidratos</span>
+                <q-icon name="info_outline" size="14px" class="text-faint cursor-pointer">
+                  <q-tooltip>1 g de carbohidratos = {{ kcalPerGram.carbs }} kcal</q-tooltip>
+                </q-icon>
               </div>
-              <span class="text-body text-weight-bold">
-                {{ displayValue(carbsPct, carbsGrams) }}
-              </span>
+              <div class="row items-center q-gutter-x-sm no-wrap">
+                <span class="text-small text-faint">{{ carbsEquivalent }}</span>
+                <q-input
+                  v-model.number="carbsValue"
+                  type="number"
+                  min="0"
+                  dense
+                  borderless
+                  class="macro-value-input"
+                  input-class="text-body text-weight-bold text-right"
+                  :suffix="unitSuffix"
+                  aria-label="Carbohidratos"
+                />
+              </div>
             </div>
-            <q-slider v-model="carbsPct" :min="0" :max="100" color="primary" />
+            <q-slider
+              v-model="carbsPct"
+              :min="0"
+              :max="100"
+              :inner-max="carbsMax"
+              :color="carbsColor"
+              @pan="(phase) => onSliderPan('carbs', phase)"
+            />
           </div>
 
           <div>
@@ -78,15 +128,41 @@
               <div class="row items-center q-gutter-xs">
                 <q-icon name="water_drop" color="warning" size="18px" />
                 <span class="text-body">Grasas</span>
+                <q-icon name="info_outline" size="14px" class="text-faint cursor-pointer">
+                  <q-tooltip>1 g de grasa = {{ kcalPerGram.fat }} kcal</q-tooltip>
+                </q-icon>
               </div>
-              <span class="text-body text-weight-bold">{{ displayValue(fatPct, fatGrams) }}</span>
+              <div class="row items-center q-gutter-x-sm no-wrap">
+                <span class="text-small text-faint">{{ fatEquivalent }}</span>
+                <q-input
+                  v-model.number="fatValue"
+                  type="number"
+                  min="0"
+                  dense
+                  borderless
+                  class="macro-value-input"
+                  input-class="text-body text-weight-bold text-right"
+                  :suffix="unitSuffix"
+                  aria-label="Grasas"
+                />
+              </div>
             </div>
-            <q-slider v-model="fatPct" :min="0" :max="100" color="primary" />
+            <q-slider
+              v-model="fatPct"
+              :min="0"
+              :max="100"
+              :inner-max="fatMax"
+              :color="fatColor"
+              @pan="(phase) => onSliderPan('fat', phase)"
+            />
           </div>
 
           <div class="surface-card row items-center justify-between">
             <span class="text-body text-muted">Total acumulado</span>
-            <span class="text-body text-weight-bold" :class="totalPct === 100 ? 'text-positive' : 'text-negative'">
+            <span
+              class="text-body text-weight-bold"
+              :class="totalPct === 100 ? 'text-positive' : 'text-negative'"
+            >
               {{ totalPct }}%
             </span>
           </div>
@@ -100,8 +176,8 @@
         header-class="text-h2-section"
       >
         <div class="text-small text-muted q-pt-sm">
-          Una repartición común es 30% proteína, 40% carbohidratos y 30% grasas. Ajusta según
-          tu objetivo: más proteína en definición, más carbohidratos en volumen.
+          Una repartición común es 30% proteína, 40% carbohidratos y 30% grasas. Ajusta según tu
+          objetivo: más proteína en definición, más carbohidratos en volumen.
         </div>
       </q-expansion-item>
 
@@ -115,13 +191,23 @@
           class="full-width"
           @click="save"
         />
-        <q-btn flat no-caps color="muted" icon="restart_alt" label="Restablecer valores" @click="reset" />
+        <q-btn
+          flat
+          no-caps
+          color="muted"
+          icon="restart_alt"
+          label="Restablecer valores"
+          @click="reset"
+        />
       </div>
     </div>
+
+    <TmbCalculatorDialog v-model="showTmbCalculator" @apply="applyEstimate" />
   </q-page>
 </template>
 
 <script setup lang="ts">
+import TmbCalculatorDialog from '../../components/TmbCalculatorDialog/TmbCalculatorDialog.vue';
 import { useMacroGoalPage } from './MacroGoalPage';
 
 const {
@@ -130,12 +216,26 @@ const {
   carbsPct,
   fatPct,
   unit,
+  unitOptions,
+  unitSuffix,
   totalPct,
-  proteinGrams,
-  carbsGrams,
-  fatGrams,
-  displayValue,
+  kcalPerGram,
+  proteinValue,
+  carbsValue,
+  fatValue,
+  proteinEquivalent,
+  carbsEquivalent,
+  fatEquivalent,
+  proteinMax,
+  carbsMax,
+  fatMax,
+  proteinColor,
+  carbsColor,
+  fatColor,
+  onSliderPan,
   save,
   reset,
+  showTmbCalculator,
+  applyEstimate,
 } = useMacroGoalPage();
 </script>

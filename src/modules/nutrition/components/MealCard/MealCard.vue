@@ -10,10 +10,17 @@
     <div class="text-h2-section q-mt-xs">{{ meal.foodName }}</div>
     <div class="row items-center q-gutter-md q-mt-sm text-small text-muted">
       <span class="status-dot bg-primary" />
-      <span>P: <b class="text-strong">{{ meal.protein }}g</b></span>
-      <span>C: <b class="text-strong">{{ meal.carbohydrates }}g</b></span>
-      <span>G: <b class="text-strong">{{ meal.fat }}g</b></span>
+      <span
+        >P: <b class="text-strong">{{ meal.protein }}g</b></span
+      >
+      <span
+        >C: <b class="text-strong">{{ meal.carbohydrates }}g</b></span
+      >
+      <span
+        >G: <b class="text-strong">{{ meal.fat }}g</b></span
+      >
     </div>
+    <div v-if="meal.notes" class="text-small text-faint q-mt-sm">{{ meal.notes }}</div>
   </q-card>
 </template>
 

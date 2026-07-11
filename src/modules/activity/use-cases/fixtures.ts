@@ -1,5 +1,9 @@
 import type { ExerciseSet, WorkoutSession } from 'src/modules/training/types/training.types';
-import type { MacroGoal, MealEntry } from 'src/modules/nutrition/types/nutrition.types';
+import type {
+  ActivityEntry,
+  MacroGoal,
+  MealEntry,
+} from 'src/modules/nutrition/types/nutrition.types';
 
 export function makeSession(overrides: Partial<WorkoutSession> = {}): WorkoutSession {
   return {
@@ -41,6 +45,20 @@ export function makeEntry(overrides: Partial<MealEntry> = {}): MealEntry {
     protein: 0,
     carbohydrates: 0,
     fat: 0,
+    ...overrides,
+  };
+}
+
+export function makeActivity(overrides: Partial<ActivityEntry> = {}): ActivityEntry {
+  return {
+    id: 'activity',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+    date: '2026-06-15',
+    type: 'Correr',
+    caloriesBurned: 0,
+    durationMinutes: 0,
+    loggedAt: new Date(),
     ...overrides,
   };
 }

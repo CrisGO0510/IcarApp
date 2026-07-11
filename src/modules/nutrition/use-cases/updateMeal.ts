@@ -1,6 +1,6 @@
 import type { MealEntryRepository } from '../repositories/nutrition.repository.port';
 import type { MealEntry, MealInput } from '../types/nutrition.types';
-import { computeCalories } from './computeCalories';
+import { resolveMealCalories } from './resolveMealCalories';
 
 export function updateMeal(repository: MealEntryRepository) {
   return async (id: string, input: MealInput): Promise<MealEntry> => {
@@ -9,8 +9,12 @@ export function updateMeal(repository: MealEntryRepository) {
       throw new Error('El nombre de la comida es obligatorio.');
     }
 
-    const calories =
-      input.calories ?? computeCalories(input.protein, input.carbohydrates, input.fat);
+    const calories = resolveMealCalories(
+      input.calories,
+      input.protein,
+      input.carbohydrates,
+      input.fat,
+    );
 
     const updated = await repository.update(id, {
       date: input.date,

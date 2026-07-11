@@ -1,5 +1,6 @@
 import { Preferences } from '@capacitor/preferences';
 import type { BaseEntity, QueryOptions, Repository } from '../types/base.types';
+import { generateUuid } from '../utils/uuid';
 
 /**
  * Local-storage adapter for the Repository port.
@@ -18,7 +19,7 @@ export abstract class JsonRepository<T extends BaseEntity> implements Repository
     const now = new Date();
     const entity = {
       ...data,
-      id: crypto.randomUUID(),
+      id: generateUuid(),
       createdAt: now,
       updatedAt: now,
     } as T;

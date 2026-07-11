@@ -1,9 +1,10 @@
-import type { MacroGoal, MealEntry, NutritionDay } from '../types/nutrition.types';
+import type { ActivityEntry, MacroGoal, MealEntry, NutritionDay } from '../types/nutrition.types';
 
 export function buildNutritionDay(
   date: string,
   entries: MealEntry[],
   goal: MacroGoal | null,
+  activities: ActivityEntry[] = [],
 ): NutritionDay {
   const totals = entries.reduce(
     (acc, entry) => ({
@@ -14,6 +15,7 @@ export function buildNutritionDay(
     }),
     { calories: 0, protein: 0, carbohydrates: 0, fat: 0 },
   );
+  const burned = activities.reduce((acc, activity) => acc + activity.caloriesBurned, 0);
 
   return {
     date,
@@ -22,5 +24,8 @@ export function buildNutritionDay(
     carbohydrates: { consumed: totals.carbohydrates, goal: goal?.carbohydrateGoal ?? null },
     fat: { consumed: totals.fat, goal: goal?.fatGoal ?? null },
     entries,
+    burned,
+    remaining: goal ? goal.calorieGoal + burned - totals.calories : null,
+    activities,
   };
 }

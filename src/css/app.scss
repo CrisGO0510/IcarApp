@@ -1,6 +1,13 @@
 // ── Texto: color ───────────────────────────────────────
-.text-muted { color: $text-muted; }
-.text-faint { color: $text-faint; }
+.text-strong {
+  color: $text-strong;
+}
+.text-muted {
+  color: $text-muted;
+}
+.text-faint {
+  color: $text-faint;
+}
 
 // ── Tipografía: escala ─────────────────────────────────
 .text-display {
@@ -51,6 +58,14 @@
   min-width: 110px;
 }
 
+.macro-value-input {
+  width: 84px;
+}
+
+.unit-toggle .q-btn {
+  width: 56px;
+}
+
 // ── Cards ──────────────────────────────────────────────
 .app-card {
   background: $surface;
@@ -68,6 +83,14 @@
 }
 
 .surface-card--bordered {
+  border: 1px solid $secondary;
+}
+
+.q-card > .surface-card.surface-card {
+  border-radius: $border-radius;
+}
+
+.q-card > .surface-card--bordered.surface-card--bordered {
   border: 1px solid $secondary;
 }
 
@@ -109,6 +132,24 @@
   font-weight: 500;
 }
 
+.calorie-ring {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid rgba($primary, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+}
+
+.empty-box {
+  border: 1px dashed $secondary;
+  border-radius: $border-radius;
+  padding: $space-5;
+  text-align: center;
+}
+
 // ── Timer flotante de descanso ─────────────────────────
 .rest-timer {
   display: inline-flex;
@@ -145,7 +186,7 @@
 }
 
 .stat-box {
-  background: $surface;
+  background: $surface-variant;
   border-radius: $border-radius;
   padding: $space-3 $space-2;
   min-height: 100%;
@@ -160,7 +201,9 @@
   overflow: hidden;
 }
 .exercise-list-leave-active {
-  transition: opacity 0.25s ease, transform 0.25s ease;
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
 }
 .exercise-list-leave-to {
   opacity: 0;
@@ -187,6 +230,14 @@
 }
 
 // ── Overrides globales de Quasar ───────────────────────
+.q-btn--rectangle {
+  border-radius: $radius-control;
+}
+
+.q-field--outlined .q-field__control {
+  border-radius: $radius-control;
+}
+
 .q-btn-toggle {
   border-radius: $radius-pill;
 }
@@ -207,6 +258,18 @@
 
 .q-dialog__backdrop {
   background: $overlay;
+}
+
+.q-tooltip {
+  background: $surface-float;
+  border: 1px solid $border-float;
+  border-radius: $border-radius;
+  padding: $space-2 $space-3;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  color: $text-strong;
+  box-shadow: $shadow-raised;
 }
 
 .app-tab-bar {

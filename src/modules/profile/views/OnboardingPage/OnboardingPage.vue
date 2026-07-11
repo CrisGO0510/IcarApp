@@ -1,6 +1,6 @@
 <template>
   <div class="onboarding-page q-pa-lg">
-    <div class="column q-gutter-md page-content">
+    <div class="column q-gutter-y-md page-content">
       <!-- Header -->
       <div class="text-center q-mb-md">
         <q-icon name="fitness_center" size="48px" color="primary" />
@@ -28,19 +28,8 @@
       <!-- Unit system -->
       <UnitSystemToggle v-model="form.unitSystem" />
 
-      <!-- Maintenance calories + Weight -->
-      <div class="row q-gutter-sm">
-        <div class="col">
-          <FieldLabel>MANTENIMIENTO</FieldLabel>
-          <q-input
-            v-model.number="form.maintenanceCalories"
-            type="number"
-            dense
-            outlined
-            suffix="kcal"
-            :error="submitted && !isPositive(form.maintenanceCalories)"
-          />
-        </div>
+      <!-- Weight + Height -->
+      <div class="row q-col-gutter-sm">
         <div class="col">
           <FieldLabel>PESO ACTUAL</FieldLabel>
           <q-input
@@ -52,18 +41,50 @@
             :error="submitted && !isPositive(form.weight)"
           />
         </div>
+        <div class="col">
+          <FieldLabel>ALTURA</FieldLabel>
+          <q-input
+            v-model.number="form.height"
+            type="number"
+            dense
+            outlined
+            :suffix="heightSuffix"
+            :error="submitted && !isPositive(form.height)"
+          />
+        </div>
       </div>
 
-      <!-- Height -->
+      <!-- Birth date -->
       <div>
-        <FieldLabel>ALTURA</FieldLabel>
+        <FieldLabel>FECHA DE NACIMIENTO</FieldLabel>
         <q-input
-          v-model.number="form.height"
-          type="number"
+          :model-value="form.birthDate"
           dense
           outlined
-          :suffix="heightSuffix"
-          :error="submitted && !isPositive(form.height)"
+          readonly
+          class="cursor-pointer"
+          aria-label="Fecha de nacimiento"
+        >
+          <template #append>
+            <q-icon name="event" />
+          </template>
+          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+            <q-date v-model="form.birthDate" :mask="dateKeyMask" :options="dateOptions" />
+          </q-popup-proxy>
+        </q-input>
+      </div>
+
+      <!-- Sex -->
+      <div>
+        <FieldLabel>SEXO</FieldLabel>
+        <q-select
+          v-model="form.sex"
+          :options="sexOptions"
+          emit-value
+          map-options
+          dense
+          outlined
+          aria-label="Sexo"
         />
       </div>
 
@@ -102,5 +123,8 @@ const {
   heightSuffix,
   isPositive,
   handleSubmit,
+  sexOptions,
+  dateOptions,
+  dateKeyMask,
 } = useOnboardingPage();
 </script>

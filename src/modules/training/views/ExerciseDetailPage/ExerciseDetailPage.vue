@@ -10,7 +10,7 @@
         <div class="text-h6 text-weight-bold">{{ exerciseName }}</div>
       </div>
 
-      <q-card flat class="surface-card">
+      <q-card flat class="app-card">
         <div class="row items-center justify-between q-mb-md">
           <span class="text-caption text-uppercase text-primary text-weight-bold">Rendimiento</span>
           <span class="pill-badge">vs última sesión</span>

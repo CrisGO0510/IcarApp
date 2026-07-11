@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { buildMacroProgress, buildNutritionSummary } from './buildNutritionSummary';
-import { makeEntry, makeGoal } from './fixtures';
+import { makeActivity, makeEntry, makeGoal } from './fixtures';
 
 describe('buildMacroProgress', () => {
   it('returns null goal fields when no goal is set', () => {
@@ -59,5 +59,19 @@ describe('buildNutritionSummary', () => {
     expect(summary.calories.consumed).toBe(400);
     expect(summary.calories.goal).toBeNull();
     expect(summary.calories.percentage).toBeNull();
+  });
+
+  it('expands calories remaining with burned activities', () => {
+    // Arrange
+    const entries = [makeEntry({ mealId: 'lunch', calories: 1500 })];
+    const goal = makeGoal({ calorieGoal: 2000 });
+    const activities = [makeActivity({ date: '2026-06-15', caloriesBurned: 300 })];
+
+    // Act
+    const result = buildNutritionSummary('2026-06-15', entries, goal, activities);
+
+    // Assert
+    expect(result.burned).toBe(300);
+    expect(result.calories.remaining).toBe(goal.calorieGoal + 300 - result.calories.consumed);
   });
 });

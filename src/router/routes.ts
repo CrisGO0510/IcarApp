@@ -33,8 +33,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'entreno/ejercicios/:id/editar',
-        component: () =>
-          import('src/modules/training/views/ExerciseEditPage/ExerciseEditPage.vue'),
+        component: () => import('src/modules/training/views/ExerciseEditPage/ExerciseEditPage.vue'),
         meta: { title: 'Editar ejercicio', back: true },
       },
       {
@@ -83,6 +82,18 @@ const routes: RouteRecordRaw[] = [
         path: 'nutricion/comida/:id/editar',
         component: () => import('src/modules/nutrition/views/MealFormPage/MealFormPage.vue'),
         meta: { title: 'Editar comida', back: true },
+      },
+      {
+        path: 'nutricion/actividad/nueva',
+        component: () =>
+          import('src/modules/nutrition/views/ActivityFormPage/ActivityFormPage.vue'),
+        meta: { title: 'Agregar actividad', back: true },
+      },
+      {
+        path: 'nutricion/actividad/:id/editar',
+        component: () =>
+          import('src/modules/nutrition/views/ActivityFormPage/ActivityFormPage.vue'),
+        meta: { title: 'Editar actividad', back: true },
       },
       {
         path: 'progreso',

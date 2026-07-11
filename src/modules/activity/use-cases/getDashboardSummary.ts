@@ -8,6 +8,7 @@ import type {
 import type {
   MealEntryRepository,
   MacroGoalRepository,
+  ActivityEntryRepository,
 } from 'src/modules/nutrition/repositories/nutrition.repository.port';
 import type { BodyWeightLogRepository } from 'src/modules/measurements/repositories/measurements.repository.port';
 import type {
@@ -21,6 +22,7 @@ import type { BodyWeightLog } from 'src/modules/measurements/types/measurements.
 import type { LastWorkout, WeeklyStats, WorkoutExerciseSummary } from '../types/activity.types';
 import type { DashboardSummary } from '../types/activity.types';
 import { sessionDuration } from 'src/modules/training/use-cases/routineSessionMeta';
+import { dateKey } from 'src/core/utils/dateKey';
 import { buildDashboardSummary } from './buildDashboardSummary';
 
 function isSameDay(a: Date, b: Date): boolean {
@@ -29,13 +31,6 @@ function isSameDay(a: Date, b: Date): boolean {
     a.getMonth() === b.getMonth() &&
     a.getDate() === b.getDate()
   );
-}
-
-function dateKey(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
 }
 
 export function buildLastWorkout(
@@ -108,18 +103,20 @@ export interface DashboardRepositories {
   setRepo: ExerciseSetRepository;
   mealEntryRepo: MealEntryRepository;
   macroGoalRepo: MacroGoalRepository;
+  activityRepo: ActivityEntryRepository;
   bodyWeightRepo: BodyWeightLogRepository;
 }
 
 export function getDashboardSummary(repos: DashboardRepositories) {
   return async (now: Date = new Date()): Promise<DashboardSummary> => {
     const dateStr = dateKey(now);
-    const [sessions, allSets, entries, goal, routines, pivots, exercises, weights] =
+    const [sessions, allSets, entries, goal, activities, routines, pivots, exercises, weights] =
       await Promise.all([
         repos.sessionRepo.findAll(),
         repos.setRepo.findAll(),
         repos.mealEntryRepo.findByDate(dateStr),
         repos.macroGoalRepo.findActive(),
+        repos.activityRepo.findByDate(dateStr),
         repos.routineRepo.findAll(),
         repos.pivotRepo.findAll(),
         repos.exerciseRepo.findAll(),
@@ -135,6 +132,7 @@ export function getDashboardSummary(repos: DashboardRepositories) {
       sets: todaySets,
       entries: entries.map((entry) => ({ ...entry, mealId: entry.id })),
       goal,
+      activities,
       lastWorkout: buildLastWorkout(sessions, allSets, routines, pivots, exercises),
       weeklyStats: buildWeeklyStats(sessions, weights, now),
     });

@@ -9,6 +9,7 @@ import { WorkoutSessionJsonRepository } from 'src/modules/training/repositories/
 import { ExerciseSetJsonRepository } from 'src/modules/training/repositories/exercise-set.json-repository';
 import { MealEntryJsonRepository } from 'src/modules/nutrition/repositories/meal-entry.json-repository';
 import { MacroGoalJsonRepository } from 'src/modules/nutrition/repositories/macro-goal.json-repository';
+import { ActivityEntryJsonRepository } from 'src/modules/nutrition/repositories/activity-entry.json-repository';
 import { BodyWeightLogJsonRepository } from 'src/modules/measurements/repositories/body-weight.json-repository';
 
 export const useActivityStore = defineStore('activity', () => {
@@ -20,6 +21,7 @@ export const useActivityStore = defineStore('activity', () => {
     setRepo: new ExerciseSetJsonRepository(),
     mealEntryRepo: new MealEntryJsonRepository(),
     macroGoalRepo: new MacroGoalJsonRepository(),
+    activityRepo: new ActivityEntryJsonRepository(),
     bodyWeightRepo: new BodyWeightLogJsonRepository(),
   });
 

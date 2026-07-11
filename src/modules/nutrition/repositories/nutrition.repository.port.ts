@@ -1,5 +1,5 @@
 import type { Repository } from 'src/core/types/base.types';
-import type { MacroGoal, Meal, MealEntry, Food } from '../types/nutrition.types';
+import type { ActivityEntry, MacroGoal, Meal, MealEntry, Food } from '../types/nutrition.types';
 
 // ── MacroGoal Port ───────────────────────────────────────────────────
 
@@ -26,4 +26,10 @@ export interface MealEntryRepository extends Repository<MealEntry> {
 export interface FoodRepository extends Repository<Food> {
   searchByName(query: string): Promise<Food[]>;
   findFavorites(): Promise<Food[]>;
+}
+
+// ── ActivityEntry Port ───────────────────────────────────────────────
+
+export interface ActivityEntryRepository extends Repository<ActivityEntry> {
+  findByDate(date: string): Promise<ActivityEntry[]>;
 }

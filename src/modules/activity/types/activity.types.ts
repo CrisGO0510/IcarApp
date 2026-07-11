@@ -16,6 +16,7 @@ export interface DailyNutritionSummary {
   carbohydrates: MacroProgress;
   fat: MacroProgress;
   mealsCount: number;
+  burned: number;
 }
 
 export interface DailyTrainingSummary {

@@ -3,14 +3,7 @@ import { storeToRefs } from 'pinia';
 import { useActivityStore } from '../../stores/activity.store';
 import { useProfileStore } from 'src/modules/profile/stores/profile.store';
 import { useMeasurementsStore } from 'src/modules/measurements/stores/measurements.store';
-
-function todayKey(): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, '0');
-  const day = String(now.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+import { todayKey } from 'src/core/utils/dateKey';
 
 export function useDashboardPage() {
   const activityStore = useActivityStore();

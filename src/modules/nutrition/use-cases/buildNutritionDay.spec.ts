@@ -1,6 +1,20 @@
 import { describe, it, expect } from 'vitest';
 import { buildNutritionDay } from './buildNutritionDay';
-import type { MacroGoal, MealEntry } from '../types/nutrition.types';
+import type { ActivityEntry, MacroGoal, MealEntry } from '../types/nutrition.types';
+
+function activity(overrides: Partial<ActivityEntry> = {}): ActivityEntry {
+  return {
+    id: 'a1',
+    date: '2026-06-24',
+    type: 'Correr',
+    caloriesBurned: 300,
+    durationMinutes: 30,
+    loggedAt: new Date(2026, 5, 24, 10),
+    createdAt: new Date(2026, 5, 24, 10),
+    updatedAt: new Date(2026, 5, 24, 10),
+    ...overrides,
+  };
+}
 
 function entry(overrides: Partial<MealEntry> = {}): MealEntry {
   return {
@@ -52,5 +66,37 @@ describe('buildNutritionDay', () => {
     // Assert
     expect(day.protein.goal).toBe(180);
     expect(day.calories.consumed).toBe(0);
+  });
+
+  it('adds burned total and expanded remaining when there are activities', () => {
+    // Arrange
+    const goal = {
+      calorieGoal: 2000,
+      proteinGoal: 180,
+      carbohydrateGoal: 320,
+      fatGoal: 75,
+    } as MacroGoal;
+    const entries = [entry({ calories: 1500 })];
+    const activities = [activity({ caloriesBurned: 300 })];
+
+    // Act
+    const day = buildNutritionDay('2026-06-24', entries, goal, activities);
+
+    // Assert
+    expect(day.burned).toBe(300);
+    expect(day.remaining).toBe(goal.calorieGoal + 300 - day.calories.consumed);
+    expect(day.activities).toHaveLength(1);
+  });
+
+  it('remaining is null without goal and burned still sums', () => {
+    // Arrange
+    const activities = [activity({ caloriesBurned: 300 })];
+
+    // Act
+    const day = buildNutritionDay('2026-06-24', [], null, activities);
+
+    // Assert
+    expect(day.remaining).toBeNull();
+    expect(day.burned).toBe(300);
   });
 });
