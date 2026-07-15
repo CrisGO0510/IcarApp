@@ -4,7 +4,13 @@ import { useQuasar } from 'quasar';
 import { storeToRefs } from 'pinia';
 import { useExerciseStore } from '../../stores/exercise.store';
 import { useRoutineStore } from '../../stores/routine.store';
+import { sortExercises, type ExerciseSort } from '../../use-cases/exerciseQuery';
 import type { Exercise } from '../../types/training.types';
+
+const LIBRARY_SORT_ICONS: Record<ExerciseSort, string> = {
+  alpha: 'sort_by_alpha',
+  recent: 'schedule',
+};
 
 export function useRoutineFormPage() {
   const route = useRoute();
@@ -20,6 +26,7 @@ export function useRoutineFormPage() {
   const name = ref('');
   const selectedIds = ref<string[]>([]);
   const showExerciseDialog = ref(false);
+  const librarySort = ref<ExerciseSort>('alpha');
 
   const selectedExercises = computed({
     get: () =>
@@ -32,10 +39,17 @@ export function useRoutineFormPage() {
   });
 
   const libraryExercises = computed(() =>
-    exercises.value
-      .filter((exercise) => !selectedIds.value.includes(exercise.id))
-      .sort((a, b) => a.name.localeCompare(b.name, 'es')),
+    sortExercises(
+      exercises.value.filter((exercise) => !selectedIds.value.includes(exercise.id)),
+      librarySort.value,
+    ),
   );
+
+  const librarySortIcon = computed(() => LIBRARY_SORT_ICONS[librarySort.value]);
+
+  function toggleLibrarySort(): void {
+    librarySort.value = librarySort.value === 'alpha' ? 'recent' : 'alpha';
+  }
 
   function isSelected(id: string): boolean {
     return selectedIds.value.includes(id);
@@ -99,8 +113,10 @@ export function useRoutineFormPage() {
     name,
     selectedExercises,
     libraryExercises,
+    librarySortIcon,
     showExerciseDialog,
     toggle,
+    toggleLibrarySort,
     openExerciseDialog,
     onCreateExercise,
     save,

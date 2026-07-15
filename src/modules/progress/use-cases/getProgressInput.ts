@@ -7,6 +7,11 @@ import type {
 } from 'src/modules/training/repositories/training.repository.port';
 import type { BodyWeightLogRepository } from 'src/modules/measurements/repositories/measurements.repository.port';
 import type {
+  ActivityEntryRepository,
+  MacroGoalRepository,
+  MealEntryRepository,
+} from 'src/modules/nutrition/repositories/nutrition.repository.port';
+import type {
   Exercise,
   ExerciseSet,
   Routine,
@@ -69,22 +74,38 @@ export interface ProgressRepositories {
   sessionRepo: WorkoutSessionRepository;
   setRepo: ExerciseSetRepository;
   bodyWeightRepo: BodyWeightLogRepository;
+  mealEntryRepo: MealEntryRepository;
+  activityRepo: ActivityEntryRepository;
+  macroGoalRepo: MacroGoalRepository;
 }
 
 export function getProgressInput(repos: ProgressRepositories) {
   return async (): Promise<ProgressInput> => {
-    const [sessions, sets, routines, pivots, exercises, weights] = await Promise.all([
-      repos.sessionRepo.findAll(),
-      repos.setRepo.findAll(),
-      repos.routineRepo.findAll(),
-      repos.pivotRepo.findAll(),
-      repos.exerciseRepo.findAll(),
-      repos.bodyWeightRepo.findAll(),
-    ]);
+    const [sessions, sets, routines, pivots, exercises, weights, mealEntries, activities, goal] =
+      await Promise.all([
+        repos.sessionRepo.findAll(),
+        repos.setRepo.findAll(),
+        repos.routineRepo.findAll(),
+        repos.pivotRepo.findAll(),
+        repos.exerciseRepo.findAll(),
+        repos.bodyWeightRepo.findAll(),
+        repos.mealEntryRepo.findAll(),
+        repos.activityRepo.findAll(),
+        repos.macroGoalRepo.findActive(),
+      ]);
 
     return {
       bodyWeightLog: toBodyWeightLog(weights),
       sessionVolumes: buildSessionVolumes(sessions, sets, routines, pivots, exercises),
+      consumedCalories: mealEntries.map((entry) => ({
+        date: entry.date,
+        calories: entry.calories,
+      })),
+      burnedCalories: activities.map((activity) => ({
+        date: activity.date,
+        calories: activity.caloriesBurned,
+      })),
+      calorieGoal: goal?.calorieGoal ?? null,
     };
   };
 }

@@ -14,6 +14,9 @@ import { ExerciseJsonRepository } from 'src/modules/training/repositories/exerci
 import { WorkoutSessionJsonRepository } from 'src/modules/training/repositories/workout-session.json-repository';
 import { ExerciseSetJsonRepository } from 'src/modules/training/repositories/exercise-set.json-repository';
 import { BodyWeightLogJsonRepository } from 'src/modules/measurements/repositories/body-weight.json-repository';
+import { MealEntryJsonRepository } from 'src/modules/nutrition/repositories/meal-entry.json-repository';
+import { ActivityEntryJsonRepository } from 'src/modules/nutrition/repositories/activity-entry.json-repository';
+import { MacroGoalJsonRepository } from 'src/modules/nutrition/repositories/macro-goal.json-repository';
 
 export const useProgressStore = defineStore('progress', () => {
   const now = new Date();
@@ -25,11 +28,20 @@ export const useProgressStore = defineStore('progress', () => {
     sessionRepo: new WorkoutSessionJsonRepository(),
     setRepo: new ExerciseSetJsonRepository(),
     bodyWeightRepo: new BodyWeightLogJsonRepository(),
+    mealEntryRepo: new MealEntryJsonRepository(),
+    activityRepo: new ActivityEntryJsonRepository(),
+    macroGoalRepo: new MacroGoalJsonRepository(),
   });
 
   const range = ref<ProgressRange>('1M');
   const filters = ref<VolumeFilters>({ routine: ALL_FILTER, type: ALL_FILTER });
-  const input = ref<ProgressInput>({ bodyWeightLog: [], sessionVolumes: [] });
+  const input = ref<ProgressInput>({
+    bodyWeightLog: [],
+    sessionVolumes: [],
+    consumedCalories: [],
+    burnedCalories: [],
+    calorieGoal: null,
+  });
 
   const summary = computed(() =>
     buildProgressSummary(input.value, range.value, filters.value, now),

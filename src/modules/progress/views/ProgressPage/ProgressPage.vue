@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-md">
-    <div class="column q-gutter-y-md page-content">
+    <div class="column no-wrap q-gutter-y-md page-content">
       <q-btn-toggle
         :model-value="range"
         :options="rangeOptions"
@@ -29,9 +29,11 @@
       />
 
       <q-card flat class="app-card">
-        <div class="text-h2-section">Progresión de Peso</div>
-        <div class="text-caption text-muted q-mb-sm">{{ summary.weightProgression.subtitle }}</div>
-        <WeightProgressionChart :points="summary.weightProgression.points" />
+        <div class="text-h2-section">Calorías de la Semana</div>
+        <div class="text-caption text-muted q-mb-sm">
+          Consumo diario vs. límite (meta + actividad)
+        </div>
+        <WeeklyCaloriesChart :weekly="summary.weeklyCalories" />
       </q-card>
 
       <q-card flat class="app-card">
@@ -65,6 +67,12 @@
         </div>
         <TrainingVolumeChart :points="summary.volume" />
       </q-card>
+
+      <q-card flat class="app-card">
+        <div class="text-h2-section">Progresión de Peso</div>
+        <div class="text-caption text-muted q-mb-sm">{{ summary.weightProgression.subtitle }}</div>
+        <WeightProgressionChart :points="summary.weightProgression.points" />
+      </q-card>
     </div>
   </q-page>
 </template>
@@ -73,6 +81,7 @@
 import ProgressMetricCard from '../../components/ProgressMetricCard/ProgressMetricCard.vue';
 import WeightProgressionChart from '../../components/WeightProgressionChart/WeightProgressionChart.vue';
 import TrainingVolumeChart from '../../components/TrainingVolumeChart/TrainingVolumeChart.vue';
+import WeeklyCaloriesChart from '../../components/WeeklyCaloriesChart/WeeklyCaloriesChart.vue';
 import { useProgressPage } from './ProgressPage';
 
 const {

@@ -18,9 +18,29 @@ export interface SessionVolume {
   weight: number;
 }
 
+export interface DatedCalories {
+  date: string;
+  calories: number;
+}
+
+export interface CalorieDay {
+  date: string;
+  label: string;
+  consumed: number;
+  burned: number;
+}
+
+export interface WeeklyCalories {
+  goal: number | null;
+  days: CalorieDay[];
+}
+
 export interface ProgressInput {
   bodyWeightLog: BodyWeightEntry[];
   sessionVolumes: SessionVolume[];
+  consumedCalories: DatedCalories[];
+  burnedCalories: DatedCalories[];
+  calorieGoal: number | null;
 }
 
 export interface TimeSeriesPoint {
@@ -62,4 +82,5 @@ export interface ProgressSummary {
   weightProgression: WeightProgression;
   volume: VolumePoint[];
   volumeOptions: VolumeOptions;
+  weeklyCalories: WeeklyCalories;
 }

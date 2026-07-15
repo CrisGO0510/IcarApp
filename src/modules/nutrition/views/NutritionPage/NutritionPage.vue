@@ -104,24 +104,33 @@
         header-class="text-h2-section text-strong q-px-none"
       >
         <div class="column q-gutter-y-sm q-pt-sm">
-          <MealCard v-for="meal in meals" :key="meal.id" :meal="meal" @open="openMeal(meal)" />
-          <div v-if="!meals.length" class="empty-box text-muted">
-            Sin comidas registradas este día
-          </div>
           <q-btn
             outline
             color="primary"
             no-caps
             icon="add"
             label="Añadir otra comida"
-            class="full-width q-mt-md"
+            class="full-width"
             @click="addMeal"
           />
+          <MealCard v-for="meal in meals" :key="meal.id" :meal="meal" @open="openMeal(meal)" />
+          <div v-if="!meals.length" class="empty-box text-muted">
+            Sin comidas registradas este día
+          </div>
         </div>
       </q-expansion-item>
 
       <q-expansion-item label="Actividad" header-class="text-h2-section text-strong q-px-none">
         <div class="column q-gutter-y-sm q-pt-sm">
+          <q-btn
+            outline
+            color="primary"
+            no-caps
+            icon="add"
+            label="Añadir actividad"
+            class="full-width"
+            @click="addActivity"
+          />
           <ActivityCard
             v-for="activity in activities"
             :key="activity.id"
@@ -134,15 +143,6 @@
           <div v-else class="text-small text-muted text-right">
             Total quemado: {{ burnedLabel }} kcal
           </div>
-          <q-btn
-            outline
-            color="primary"
-            no-caps
-            icon="add"
-            label="Añadir actividad"
-            class="full-width q-mt-md"
-            @click="addActivity"
-          />
         </div>
       </q-expansion-item>
     </div>

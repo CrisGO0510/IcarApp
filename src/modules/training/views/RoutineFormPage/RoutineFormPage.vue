@@ -42,8 +42,19 @@
       </div>
 
       <div>
-        <div class="text-caption text-uppercase text-muted q-mb-sm">
-          Biblioteca ({{ libraryExercises.length }})
+        <div class="row items-center justify-between q-mb-sm">
+          <div class="text-caption text-uppercase text-muted">
+            Biblioteca ({{ libraryExercises.length }})
+          </div>
+          <q-btn
+            flat
+            dense
+            round
+            size="sm"
+            color="primary"
+            :icon="librarySortIcon"
+            @click="toggleLibrarySort"
+          />
         </div>
         <div v-if="libraryExercises.length" class="column q-gutter-y-sm">
           <ExerciseSelectItem
@@ -74,8 +85,10 @@ const {
   name,
   selectedExercises,
   libraryExercises,
+  librarySortIcon,
   showExerciseDialog,
   toggle,
+  toggleLibrarySort,
   openExerciseDialog,
   onCreateExercise,
   save,

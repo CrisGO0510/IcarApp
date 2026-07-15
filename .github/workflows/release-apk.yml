@@ -1,0 +1,74 @@
+name: Release APK
+
+on:
+  push:
+    branches: ['**']
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-apk
+  cancel-in-progress: true
+
+env:
+  APK_NAME: icarapp-${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || 'latest' }}.apk
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm exec cap sync android
+      - run: chmod +x android/gradlew
+
+      - name: Build APK firmado (release)
+        if: ${{ secrets.RELEASE_KEYSTORE_BASE64 != '' }}
+        working-directory: android
+        env:
+          RELEASE_KEYSTORE_PATH: ${{ github.workspace }}/android/release.keystore
+          RELEASE_KEYSTORE_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          RELEASE_KEY_ALIAS: icarapp
+          RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
+          APP_VERSION_CODE: ${{ github.run_number }}
+        run: |
+          echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 -d > "$RELEASE_KEYSTORE_PATH"
+          ./gradlew assembleRelease
+
+      - name: Build APK debug (sin secrets de firma)
+        if: ${{ secrets.RELEASE_KEYSTORE_BASE64 == '' }}
+        working-directory: android
+        env:
+          APP_VERSION_CODE: ${{ github.run_number }}
+        run: ./gradlew assembleDebug
+
+      - run: mv android/app/build/outputs/apk/*/app-*.apk "$APK_NAME"
+
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: icarapp-*.apk
+          generate_release_notes: true
+      - uses: softprops/action-gh-release@v2
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        with:
+          tag_name: latest
+          name: APK más reciente
+          prerelease: true
+          files: icarapp-*.apk
+          body: Build automática del último push (${{ github.sha }}, rama ${{ github.ref_name }}).

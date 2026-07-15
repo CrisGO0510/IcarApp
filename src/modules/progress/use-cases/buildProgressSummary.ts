@@ -6,6 +6,7 @@ import type {
 } from '../types/progress.types';
 import { buildWeightProgression, summarizeWeight } from './bodyWeight';
 import { buildTrainingVolume, computeAttendance, volumeOptions } from './trainingVolume';
+import { buildWeeklyCalories } from './weeklyCalories';
 
 export function buildProgressSummary(
   input: ProgressInput,
@@ -23,5 +24,11 @@ export function buildProgressSummary(
     weightProgression: buildWeightProgression(input.bodyWeightLog, range, now),
     volume: buildTrainingVolume(input.sessionVolumes, range, filters, now),
     volumeOptions: volumeOptions(input.sessionVolumes),
+    weeklyCalories: buildWeeklyCalories(
+      input.consumedCalories,
+      input.burnedCalories,
+      input.calorieGoal,
+      now,
+    ),
   };
 }

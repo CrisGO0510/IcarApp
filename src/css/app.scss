@@ -58,6 +58,73 @@
   min-width: 110px;
 }
 
+// ── Gráfica de calorías semanales ──────────────────────
+.weekly-cal {
+  display: block;
+  width: 100%;
+
+  &__baseline {
+    stroke: $secondary;
+    stroke-width: 1;
+  }
+
+  &__bar {
+    fill: $primary;
+  }
+
+  &__excess {
+    fill: $negative;
+  }
+
+  &__zone {
+    fill: rgba($positive, 0.18);
+  }
+
+  &__limit {
+    stroke: $text-muted;
+    stroke-width: 1.5;
+  }
+
+  &__limit--raised {
+    stroke: $positive;
+    stroke-width: 2.5;
+  }
+
+  &__connector {
+    stroke: $text-faint;
+    stroke-width: 1;
+  }
+
+  &__day {
+    fill: $text-faint;
+    font-size: 11px;
+    text-anchor: middle;
+  }
+
+  &__day--selected {
+    fill: $text-strong;
+    font-weight: 700;
+  }
+
+  &__hit {
+    fill: transparent;
+    cursor: pointer;
+  }
+
+  &__bar,
+  &__excess,
+  &__zone {
+    cursor: pointer;
+  }
+
+  &__limit-hit {
+    stroke: transparent;
+    stroke-width: 16;
+    pointer-events: stroke;
+    cursor: pointer;
+  }
+}
+
 .macro-value-input {
   width: 84px;
 }
