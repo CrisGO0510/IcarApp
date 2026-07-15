@@ -51,7 +51,7 @@
                 {{ set.setNumber }}
               </span>
               <div class="column">
-                <span class="text-weight-medium">{{ set.weight ?? 0 }} kg</span>
+                <span class="text-weight-medium">{{ set.weight ?? 0 }} {{ weightUnit }}</span>
                 <span v-if="set.notes" class="text-caption text-faint">{{ set.notes }}</span>
               </div>
             </div>
@@ -70,7 +70,7 @@
 import { computed } from 'vue';
 import { useExerciseDetailPage } from './ExerciseDetailPage';
 
-const { exerciseName, routineName, performance, groups, openSet, goToEdit } =
+const { exerciseName, routineName, weightUnit, performance, groups, openSet, goToEdit } =
   useExerciseDetailPage();
 
 function formatDelta(value: number | null, unit = ''): string {
@@ -102,8 +102,8 @@ const stats = computed(() => [
   {
     label: 'Volumen',
     icon: 'bar_chart',
-    value: `${performance.value.volume} kg`,
-    delta: formatDelta(performance.value.volumeDelta, ' kg'),
+    value: `${performance.value.volume} ${weightUnit.value}`,
+    delta: formatDelta(performance.value.volumeDelta, ` ${weightUnit.value}`),
     deltaClass: deltaClass(performance.value.volumeDelta),
   },
 ]);

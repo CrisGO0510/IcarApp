@@ -48,11 +48,11 @@
         <q-slide-item
           v-for="exercise in visibleExercises"
           :key="exercise.id"
-          right-color="negative"
+          left-color="negative"
           class="exercise-slide"
-          @right="onDelete(exercise.id)"
+          @left="onDelete(exercise.id)"
         >
-          <template #right>
+          <template #left>
             <div class="row items-center q-gutter-x-sm">
               <q-icon name="delete" />
               <span>Eliminar</span>

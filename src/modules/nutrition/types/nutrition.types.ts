@@ -1,5 +1,10 @@
 import type { BaseEntity } from 'src/core/types/base.types';
 
+// ── Units ────────────────────────────────────────────────────────────
+
+export const MASS_UNIT = 'gr'; // unit for meal quantities and macros
+export const ENERGY_UNIT = 'kcal';
+
 // ── Macro Goal ───────────────────────────────────────────────────────
 
 export interface MacroGoal extends BaseEntity {

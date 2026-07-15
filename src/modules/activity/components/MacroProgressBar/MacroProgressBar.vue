@@ -10,7 +10,7 @@
       v-if="hasGoal"
       :value="ratio"
       :color="isOver ? 'warning' : 'primary'"
-      track-color="dark"
+      track-color="surface-variant"
       rounded
       size="8px"
     />

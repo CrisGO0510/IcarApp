@@ -41,27 +41,27 @@
         <q-slide-item
           v-for="view in visibleExercises"
           :key="view.pivotId"
-          left-color="negative"
-          right-color="positive"
+          left-color="positive"
+          right-color="negative"
           class="exercise-slide"
-          @left="onSwipeDelete(view, $event)"
-          @right="onSwipeSet(view, $event)"
+          @left="onSwipeSet(view, $event)"
+          @right="onSwipeDelete(view, $event)"
         >
           <template #left>
-            <div class="row items-center q-gutter-x-sm">
-              <q-icon name="delete" />
-              <span>Eliminar</span>
-            </div>
-          </template>
-          <template #right>
             <div class="row items-center q-gutter-x-sm">
               <q-icon name="check" />
               <span>Serie</span>
             </div>
           </template>
+          <template #right>
+            <div class="row items-center q-gutter-x-sm">
+              <q-icon name="delete" />
+              <span>Eliminar</span>
+            </div>
+          </template>
           <ExerciseListItem
             :exercise="view.exercise"
-            :caption="captionFor(view.pivotId)"
+            :caption="captionFor(view)"
             :status-label="statusLabelFor(view.pivotId)"
             :status-color="statusColorFor(view.pivotId)"
             @click="onOpenExercise(view.pivotId)"
@@ -73,19 +73,10 @@
       </div>
     </div>
 
-    <q-page-sticky v-if="restRunning" position="bottom-left" :offset="[16, 16]">
-      <div class="rest-timer">
-        <q-btn round unelevated class="rest-timer__tile" icon="timer" @click="stopRest" />
-        <div>
-          <div class="rest-timer__label">Descanso</div>
-          <div class="rest-timer__value">{{ restLabel }}</div>
-        </div>
-      </div>
-    </q-page-sticky>
-
     <SetFormDialog
       v-model="showSetDialog"
       :exercise-name="activeExerciseName"
+      :weight-unit="activeWeightUnit"
       :default-reps="activeDefaults.reps"
       :default-weight="activeDefaults.weight"
       @submit="onSubmitSet"
@@ -105,9 +96,8 @@ const {
   query,
   showSetDialog,
   activeExerciseName,
+  activeWeightUnit,
   activeDefaults,
-  restRunning,
-  restLabel,
   captionFor,
   statusLabelFor,
   statusColorFor,
@@ -115,7 +105,6 @@ const {
   onSwipeDelete,
   onSubmitSet,
   onOpenExercise,
-  stopRest,
   goToEdit,
 } = useRoutineDetailPage();
 </script>

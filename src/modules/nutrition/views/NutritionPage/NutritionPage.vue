@@ -54,7 +54,7 @@
               <q-linear-progress
                 :value="macroRatio(day.protein)"
                 color="primary"
-                track-color="secondary"
+                track-color="surface-variant"
                 rounded
                 size="8px"
                 class="q-mb-xs"
@@ -69,7 +69,7 @@
               <q-linear-progress
                 :value="macroRatio(day.carbohydrates)"
                 color="primary"
-                track-color="secondary"
+                track-color="surface-variant"
                 rounded
                 size="8px"
                 class="q-mb-xs"
@@ -84,7 +84,7 @@
               <q-linear-progress
                 :value="macroRatio(day.fat)"
                 color="primary"
-                track-color="secondary"
+                track-color="surface-variant"
                 rounded
                 size="8px"
                 class="q-mb-xs"

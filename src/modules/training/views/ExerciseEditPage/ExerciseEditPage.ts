@@ -4,8 +4,13 @@ import { storeToRefs } from 'pinia';
 import { useQuasar } from 'quasar';
 import { useExerciseStore } from '../../stores/exercise.store';
 import { useProfileStore } from 'src/modules/profile/stores/profile.store';
+import { useConfirmDialog } from 'src/composables/useConfirmDialog';
+import { resolveWeightUnit } from '../../use-cases/resolveWeightUnit';
+import { WEIGHT_UNITS, type WeightUnit } from '../../types/training.types';
 
 const DEFAULT_REST_SECONDS = 90;
+
+const WEIGHT_UNIT_OPTIONS = WEIGHT_UNITS.map((unit) => ({ label: unit, value: unit }));
 
 export function useExerciseEditPage() {
   const route = useRoute();
@@ -15,12 +20,14 @@ export function useExerciseEditPage() {
   const profileStore = useProfileStore();
   const { exercises } = storeToRefs(store);
   const { profile } = storeToRefs(profileStore);
+  const { confirmDestructive } = useConfirmDialog();
 
   const id = computed(() => route.params.id as string);
   const name = ref('');
   const useDefault = ref(true);
   const minutes = ref(0);
   const seconds = ref(0);
+  const weightUnit = ref<WeightUnit>('kg');
 
   function applyExercise(): void {
     const exercise = exercises.value.find((item) => item.id === id.value);
@@ -34,6 +41,7 @@ export function useExerciseEditPage() {
     useDefault.value = exercise.restTime == null;
     minutes.value = Math.floor(restTime / 60);
     seconds.value = restTime % 60;
+    weightUnit.value = resolveWeightUnit(exercise, profile.value?.unitSystem);
   }
 
   async function save(): Promise<void> {
@@ -43,7 +51,7 @@ export function useExerciseEditPage() {
     }
     const restTime = useDefault.value ? null : minutes.value * 60 + seconds.value;
     try {
-      await store.update(id.value, name.value, restTime);
+      await store.update(id.value, name.value, restTime, weightUnit.value);
       router.back();
     } catch (error) {
       $q.notify({
@@ -54,14 +62,12 @@ export function useExerciseEditPage() {
   }
 
   function remove(): void {
-    $q.dialog({
+    confirmDestructive({
       title: 'Eliminar ejercicio',
       message: `¿Eliminar "${name.value}"? Se quitará también de las rutinas que lo usen.`,
-      cancel: { flat: true, noCaps: true, label: 'Cancelar' },
-      ok: { unelevated: true, noCaps: true, color: 'negative', label: 'Eliminar' },
-      dark: true,
-    }).onOk(() => {
-      void store.deleteById(id.value).then(() => router.back());
+      onConfirm: () => {
+        void store.deleteById(id.value).then(() => router.back());
+      },
     });
   }
 
@@ -70,5 +76,14 @@ export function useExerciseEditPage() {
     applyExercise();
   });
 
-  return { name, useDefault, minutes, seconds, save, remove };
+  return {
+    name,
+    useDefault,
+    minutes,
+    seconds,
+    weightUnit,
+    weightUnitOptions: WEIGHT_UNIT_OPTIONS,
+    save,
+    remove,
+  };
 }

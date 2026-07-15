@@ -34,10 +34,6 @@ export const useWorkoutStore = defineStore('workout', () => {
   const lastSets = ref<Record<string, ExerciseSet>>({});
   const history = ref<SetDayGroup[]>([]);
 
-  const restRemaining = ref(0);
-  const restRunning = ref(false);
-  let intervalId: ReturnType<typeof setInterval> | null = null;
-
   async function loadLastSets(): Promise<void> {
     lastSets.value = await _lastSets();
   }
@@ -81,32 +77,9 @@ export const useWorkoutStore = defineStore('workout', () => {
     return _setDetail(id);
   }
 
-  function stopRest(): void {
-    if (intervalId !== null) {
-      clearInterval(intervalId);
-      intervalId = null;
-    }
-    restRunning.value = false;
-    restRemaining.value = 0;
-  }
-
-  function startRest(seconds: number): void {
-    stopRest();
-    restRemaining.value = seconds;
-    restRunning.value = true;
-    intervalId = setInterval(() => {
-      restRemaining.value -= 1;
-      if (restRemaining.value <= 0) {
-        stopRest();
-      }
-    }, 1000);
-  }
-
   return {
     lastSets,
     history,
-    restRemaining,
-    restRunning,
     loadLastSets,
     loadHistory,
     loadHistoryByExerciseId,
@@ -115,8 +88,6 @@ export const useWorkoutStore = defineStore('workout', () => {
     editSet,
     removeSet,
     setDetail,
-    startRest,
-    stopRest,
   };
 });
 

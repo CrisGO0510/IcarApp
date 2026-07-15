@@ -1,15 +1,15 @@
 import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
-import { useQuasar } from 'quasar';
 import { useRoutineStore } from '../../stores/routine.store';
 import type { RoutineSummary } from '../../types/training.types';
+import { useConfirmDialog } from 'src/composables/useConfirmDialog';
 
 export function useRoutinesListPage() {
   const router = useRouter();
-  const $q = useQuasar();
   const store = useRoutineStore();
   const { summaries } = storeToRefs(store);
+  const { confirmDestructive } = useConfirmDialog();
 
   function goToLibrary(): void {
     void router.push('/entreno/ejercicios');
@@ -28,14 +28,12 @@ export function useRoutinesListPage() {
   }
 
   function deleteRoutine(summary: RoutineSummary): void {
-    $q.dialog({
+    confirmDestructive({
       title: 'Eliminar rutina',
       message: `¿Eliminar "${summary.routine.name}"? Esta acción no se puede deshacer.`,
-      cancel: { flat: true, noCaps: true, label: 'Cancelar' },
-      ok: { unelevated: true, noCaps: true, color: 'negative', label: 'Eliminar' },
-      dark: true,
-    }).onOk(() => {
-      void store.remove(summary.routine.id);
+      onConfirm: () => {
+        void store.remove(summary.routine.id);
+      },
     });
   }
 

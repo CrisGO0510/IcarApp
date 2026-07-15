@@ -26,6 +26,8 @@ export interface UserProfile extends BaseEntity {
   height: number; // cm or in depending on unitSystem
   birthDate?: string; // YYYY-MM-DD
   sex?: Sex;
+  restNotificationsEnabled?: boolean; // avisar al terminar el descanso (default true)
+  restVibrationEnabled?: boolean; // vibrar al terminar el descanso (default true)
 }
 
 export interface OnboardingForm {

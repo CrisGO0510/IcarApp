@@ -67,17 +67,13 @@
           class="full-width"
           @click="save"
         />
-        <q-btn
+        <ActionButton
           v-if="isEdit"
-          flat
-          no-caps
-          color="negative"
-          icon="delete"
+          :kind="ACTION_KIND.DELETE"
           label="Eliminar actividad"
-          class="full-width"
           @click="remove"
         />
-        <q-btn flat no-caps color="negative" label="Cancelar" class="full-width" @click="cancel" />
+        <ActionButton :kind="ACTION_KIND.CANCEL" label="Cancelar" @click="cancel" />
       </div>
     </div>
   </q-page>
@@ -85,6 +81,8 @@
 
 <script setup lang="ts">
 import { useActivityFormPage } from './ActivityFormPage';
+import ActionButton from 'src/components/base/ActionButton/ActionButton.vue';
+import { ACTION_KIND } from 'src/components/base/ActionButton/ActionButton';
 
 const {
   isEdit,

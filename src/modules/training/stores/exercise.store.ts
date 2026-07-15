@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue';
 import { defineStore, acceptHMRUpdate } from 'pinia';
-import type { Exercise } from '../types/training.types';
+import type { Exercise, WeightUnit } from '../types/training.types';
 import { ExerciseJsonRepository } from '../repositories/exercise.json-repository';
 import { RoutineExerciseJsonRepository } from '../repositories/routine-exercise.json-repository';
 import { listExercises } from '../use-cases/listExercises';
@@ -40,8 +40,13 @@ export const useExerciseStore = defineStore('exercise', () => {
     exercises.value = [...exercises.value, created];
   }
 
-  async function update(id: string, name: string, restTime: number | null): Promise<void> {
-    const updated = await edit(id, name, restTime);
+  async function update(
+    id: string,
+    name: string,
+    restTime: number | null,
+    weightUnit: WeightUnit,
+  ): Promise<void> {
+    const updated = await edit(id, name, restTime, weightUnit);
     exercises.value = exercises.value.map((exercise) =>
       exercise.id === id ? updated : exercise,
     );

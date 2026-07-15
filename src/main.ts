@@ -8,6 +8,7 @@ import './css/app.scss';
 
 import App from './App.vue';
 import router from './router';
+import { configureHardwareBackButton } from './core/native/hardwareBackButton';
 
 const app = createApp(App);
 
@@ -22,5 +23,7 @@ app.use(Quasar, {
 });
 app.use(createPinia());
 app.use(router);
+
+configureHardwareBackButton();
 
 app.mount('#app');

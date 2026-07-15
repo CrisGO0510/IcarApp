@@ -34,7 +34,7 @@
             dense
             outlined
             min="0"
-            suffix="kg"
+            :suffix="weightUnit"
             aria-label="Peso"
           />
         </div>
@@ -91,18 +91,19 @@
         />
       </div>
 
-      <q-btn no-caps class="delete-btn full-width" color="negative" size="lg" flat @click="remove">
-        Eliminar serie
-      </q-btn>
+      <ActionButton :kind="ACTION_KIND.DELETE" label="Eliminar serie" @click="remove" />
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { useSetEditPage } from './SetEditPage';
+import ActionButton from 'src/components/base/ActionButton/ActionButton.vue';
+import { ACTION_KIND } from 'src/components/base/ActionButton/ActionButton';
 
 const {
   exerciseName,
+  weightUnit,
   reps,
   weight,
   notes,

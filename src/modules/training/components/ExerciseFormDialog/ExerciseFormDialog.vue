@@ -14,7 +14,7 @@
       />
 
       <div class="row justify-end q-gutter-sm q-mt-lg">
-        <q-btn flat no-caps label="Cancelar" @click="open = false" />
+        <ActionButton :kind="ACTION_KIND.CANCEL" label="Cancelar" :block="false" @click="open = false" />
         <q-btn unelevated color="primary" no-caps label="Agregar" @click="submit" />
       </div>
     </q-card>
@@ -23,6 +23,8 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import ActionButton from 'src/components/base/ActionButton/ActionButton.vue';
+import { ACTION_KIND } from 'src/components/base/ActionButton/ActionButton';
 
 const open = defineModel<boolean>({ required: true });
 

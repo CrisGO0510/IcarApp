@@ -20,6 +20,20 @@
 
       <RestTimeSelector v-model="restTime" />
 
+      <div>
+        <FieldLabel>AVISOS DE DESCANSO</FieldLabel>
+        <q-toggle
+          v-model="restNotifications"
+          label="Notificación al terminar el descanso"
+          color="primary"
+        />
+        <q-toggle
+          v-model="restVibration"
+          label="Vibración al terminar el descanso"
+          color="primary"
+        />
+      </div>
+
       <UnitSystemToggle v-model="form.unitSystem" />
 
       <div class="row q-col-gutter-sm">
@@ -89,6 +103,36 @@
         :disable="saving"
         @click="save"
       />
+
+      <div class="q-mt-md">
+        <div class="text-micro text-uppercase text-muted">Datos</div>
+        <div class="row q-col-gutter-sm q-mt-xs">
+          <div class="col">
+            <q-btn
+              label="Exportar"
+              icon="upload"
+              color="primary"
+              outline
+              no-caps
+              class="full-width"
+              :disable="transferring"
+              @click="exportData"
+            />
+          </div>
+          <div class="col">
+            <q-btn
+              label="Importar"
+              icon="download"
+              color="primary"
+              outline
+              no-caps
+              class="full-width"
+              :disable="transferring"
+              @click="importData"
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </q-page>
 </template>
@@ -102,8 +146,13 @@ import { useSettingsPage } from './SettingsPage';
 const {
   form,
   restTime,
+  restNotifications,
+  restVibration,
   submitted,
   saving,
+  transferring,
+  exportData,
+  importData,
   weightSuffix,
   heightSuffix,
   isPositive,

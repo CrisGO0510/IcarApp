@@ -4,6 +4,7 @@ import { useQuasar } from 'quasar';
 import { useNutritionStore } from '../../stores/nutrition.store';
 import { ACTIVITY_TYPES, DATE_QUERY_PARAM, OTHER_ACTIVITY_TYPE } from '../../types/nutrition.types';
 import type { ActivityInput } from '../../types/nutrition.types';
+import { useConfirmDialog } from 'src/composables/useConfirmDialog';
 
 const ACTIVITY_NOT_FOUND_MESSAGE = 'No se encontró la actividad.';
 
@@ -12,6 +13,7 @@ export function useActivityFormPage() {
   const router = useRouter();
   const $q = useQuasar();
   const store = useNutritionStore();
+  const { confirmDestructive } = useConfirmDialog();
 
   const activityId = computed(() => (route.params.id as string | undefined) ?? null);
   const isEdit = computed(() => activityId.value !== null);
@@ -54,22 +56,20 @@ export function useActivityFormPage() {
   function remove(): void {
     const id = activityId.value;
     if (!id) return;
-    $q.dialog({
+    confirmDestructive({
       title: 'Eliminar actividad',
       message: 'Esta acción es irreversible. ¿Eliminar la actividad?',
-      cancel: { flat: true, noCaps: true, label: 'Cancelar' },
-      ok: { unelevated: true, noCaps: true, color: 'negative', label: 'Eliminar' },
-      dark: true,
-    }).onOk(() => {
-      void store
-        .removeActivity(id)
-        .then(() => router.push('/nutricion'))
-        .catch((error: unknown) => {
-          $q.notify({
-            type: 'negative',
-            message: error instanceof Error ? error.message : 'No se pudo eliminar la actividad.',
+      onConfirm: () => {
+        void store
+          .removeActivity(id)
+          .then(() => router.push('/nutricion'))
+          .catch((error: unknown) => {
+            $q.notify({
+              type: 'negative',
+              message: error instanceof Error ? error.message : 'No se pudo eliminar la actividad.',
+            });
           });
-        });
+      },
     });
   }
 

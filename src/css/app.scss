@@ -86,12 +86,38 @@
   border: 1px solid $secondary;
 }
 
+.surface-card--nested {
+  background: $dark-page;
+  box-shadow: none;
+  padding: $space-3;
+}
+
+// ── Formulario de comida: base editable y preview de cálculo ──
+.base-field {
+  gap: $space-1;
+  background: $dark-page;
+  border: 1px solid $primary;
+  border-radius: $radius-pill;
+  padding: 2px $space-3;
+}
+.base-field__input {
+  width: 44px;
+}
+.calc-preview__kcal {
+  color: $text-strong;
+}
+
 .q-card > .surface-card.surface-card {
   border-radius: $border-radius;
 }
 
 .q-card > .surface-card--bordered.surface-card--bordered {
   border: 1px solid $secondary;
+}
+
+// ── Colores utilitarios de tokens (para props color/track-color de Quasar) ──
+.bg-surface-variant {
+  background: $surface-variant !important;
 }
 
 // ── Tiles de ícono ─────────────────────────────────────
@@ -150,39 +176,51 @@
   text-align: center;
 }
 
-// ── Timer flotante de descanso ─────────────────────────
-.rest-timer {
+// ── Timer flotante de descanso (global, arrastrable) ───
+.rest-timer-widget {
+  position: fixed;
+  z-index: $z-rest-timer;
   display: inline-flex;
   align-items: center;
   gap: $space-3;
   background: $surface-float;
   border: 1px solid $border-float;
   border-radius: $radius-float;
-  padding: $space-2 $space-5 $space-2 $space-2;
+  padding: $space-2 $space-2 $space-2 $space-4;
   box-shadow: $shadow-raised;
+  touch-action: none;
+  user-select: none;
+  cursor: grab;
 }
-.rest-timer__tile {
-  width: 48px;
-  height: 48px;
-  border-radius: $border-radius;
-  background: $tile-bg;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.rest-timer-widget--dragging {
+  cursor: grabbing;
+  opacity: 0.9;
+}
+.rest-timer-widget--snapping {
+  transition:
+    left 0.25s ease,
+    top 0.25s ease;
+}
+.rest-timer-widget__icon {
   color: $primary;
   flex: 0 0 auto;
 }
-.rest-timer__label {
+.rest-timer-widget__label {
   color: $primary;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 1px;
   text-transform: uppercase;
 }
-.rest-timer__value {
+.rest-timer-widget__value {
   color: $text-strong;
   font-size: 26px;
   font-weight: 700;
+  line-height: 1.1;
+}
+.rest-timer-widget__close {
+  color: $text-faint;
+  flex: 0 0 auto;
 }
 
 .stat-box {
@@ -219,8 +257,9 @@
   border-radius: $border-radius;
   padding: $space-2 0;
 }
-.delete-btn {
+.action-btn--danger {
   background: rgba($negative, 0.12);
+  border: 1px solid $negative;
 }
 .drag-handle {
   cursor: grab;
@@ -240,6 +279,42 @@
 
 .q-btn-toggle {
   border-radius: $radius-pill;
+}
+
+// ── Toggle segmentado con indicador deslizante ─────────
+.segmented {
+  position: relative;
+  display: flex;
+  padding: 4px;
+  background: $dark;
+  border-radius: $radius-pill;
+  user-select: none;
+}
+.segmented__pill {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc((100% - 8px) / var(--segment-count));
+  background: $primary;
+  border-radius: $radius-pill;
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.segmented__option {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: $space-3 0;
+  border: none;
+  background: transparent;
+  color: $text-faint;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.28s ease;
+}
+.segmented__option--active {
+  color: $text-strong;
 }
 
 .app-header {

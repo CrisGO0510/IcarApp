@@ -89,7 +89,7 @@
       </div>
 
       <div class="row justify-end q-gutter-sm q-mt-lg">
-        <q-btn flat no-caps label="Cancelar" @click="open = false" />
+        <ActionButton :kind="ACTION_KIND.CANCEL" label="Cancelar" :block="false" @click="open = false" />
         <q-btn
           unelevated
           color="primary"
@@ -111,6 +111,8 @@ import type { Sex } from 'src/modules/profile/types/profile.types';
 import { computeMaintenanceEstimate, TRAINING_FREQUENCIES } from 'src/modules/profile/use-cases/computeTmb';
 import type { TrainingFrequencyKey } from 'src/modules/profile/use-cases/computeTmb';
 import { calculateAge } from 'src/modules/profile/use-cases/calculateAge';
+import ActionButton from 'src/components/base/ActionButton/ActionButton.vue';
+import { ACTION_KIND } from 'src/components/base/ActionButton/ActionButton';
 
 const open = defineModel<boolean>({ required: true });
 

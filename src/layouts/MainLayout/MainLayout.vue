@@ -33,16 +33,22 @@
     <q-footer class="app-footer">
       <AppTabBar />
     </q-footer>
+
+    <RestTimerWidget />
   </q-layout>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import AppTabBar from 'src/components/layout/AppTabBar/AppTabBar.vue';
+import RestTimerWidget from 'src/components/layout/RestTimerWidget/RestTimerWidget.vue';
+import { useRestTimerStore } from 'src/modules/training/stores/restTimer.store';
+import { ensureNotificationPermission } from 'src/core/native/restNotifications';
 
 const route = useRoute();
 const router = useRouter();
+const restTimerStore = useRestTimerStore();
 
 const title = computed(() => (route.meta.title as string | undefined) ?? 'IcarApp');
 const showBack = computed(() => route.meta.back === true);
@@ -54,4 +60,9 @@ function goBack(): void {
     void router.push('/');
   }
 }
+
+onMounted(() => {
+  void restTimerStore.rehydrate();
+  void ensureNotificationPermission();
+});
 </script>

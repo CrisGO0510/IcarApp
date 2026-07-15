@@ -54,15 +54,22 @@
         </q-card>
       </div>
 
-      <q-btn no-caps class="delete-btn full-width" color="negative" size="lg" flat @click="remove">
-        Eliminar ejercicio
-      </q-btn>
+      <div>
+        <div class="text-caption text-uppercase text-muted q-mb-sm">Unidad de peso</div>
+        <SegmentedToggle v-model="weightUnit" :options="weightUnitOptions" />
+      </div>
+
+      <ActionButton :kind="ACTION_KIND.DELETE" label="Eliminar ejercicio" @click="remove" />
     </div>
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { useExerciseEditPage } from './ExerciseEditPage';
+import ActionButton from 'src/components/base/ActionButton/ActionButton.vue';
+import { ACTION_KIND } from 'src/components/base/ActionButton/ActionButton';
+import SegmentedToggle from 'src/components/base/SegmentedToggle/SegmentedToggle.vue';
 
-const { name, useDefault, minutes, seconds, save, remove } = useExerciseEditPage();
+const { name, useDefault, minutes, seconds, weightUnit, weightUnitOptions, save, remove } =
+  useExerciseEditPage();
 </script>

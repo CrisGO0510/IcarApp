@@ -3,11 +3,12 @@ import type {
   RoutineExerciseRepository,
   ExerciseRepository,
 } from '../repositories/training.repository.port';
-import type { ExerciseSet } from '../types/training.types';
+import type { ExerciseSet, WeightUnit } from '../types/training.types';
 
 export interface SetDetail {
   set: ExerciseSet;
   exerciseName: string;
+  weightUnit?: WeightUnit | undefined;
 }
 
 const FALLBACK_EXERCISE_NAME = 'Ejercicio';
@@ -25,6 +26,10 @@ export function getSetDetail(
     }
     const pivot = await pivotRepository.findById(set.routineExerciseId);
     const exercise = pivot ? await exerciseRepository.findById(pivot.exerciseId) : null;
-    return { set, exerciseName: exercise?.name ?? FALLBACK_EXERCISE_NAME };
+    return {
+      set,
+      exerciseName: exercise?.name ?? FALLBACK_EXERCISE_NAME,
+      weightUnit: exercise?.weightUnit,
+    };
   };
 }

@@ -19,12 +19,15 @@
     "cap:android": "cap run android"
   },
   "dependencies": {
+    "@capacitor/app": "^8.1.0",
     "@capacitor/core": "^8.4.0",
+    "@capacitor/filesystem": "^8.1.2",
+    "@capacitor/local-notifications": "^8.2.0",
     "@capacitor/preferences": "^8.0.1",
+    "@capacitor/share": "^8.0.1",
     "@quasar/extras": "^1.16.4",
     "apexcharts": "^5.15.2",
     "pinia": "^3.0.1",
-    "pinia-plugin-persistedstate": "^4.7.1",
     "quasar": "^2.16.0",
     "vue": "^3.5.22",
     "vue-router": "^5.0.0",

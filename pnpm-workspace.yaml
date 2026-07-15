@@ -1,5 +1,6 @@
 allowBuilds:
   '@parcel/watcher': false
   esbuild: false
+  sharp: set this to true or false
 # https://pnpm.io/settings
 shamefullyHoist: true

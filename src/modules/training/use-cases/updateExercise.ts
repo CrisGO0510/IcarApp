@@ -1,8 +1,13 @@
 import type { ExerciseRepository } from '../repositories/training.repository.port';
-import type { Exercise } from '../types/training.types';
+import type { Exercise, WeightUnit } from '../types/training.types';
 
 export function updateExercise(repository: ExerciseRepository) {
-  return async (id: string, name: string, restTime: number | null): Promise<Exercise> => {
+  return async (
+    id: string,
+    name: string,
+    restTime: number | null,
+    weightUnit: WeightUnit,
+  ): Promise<Exercise> => {
     const cleanName = name.trim();
     if (!cleanName) {
       throw new Error('El nombre del ejercicio es obligatorio.');
@@ -16,7 +21,7 @@ export function updateExercise(repository: ExerciseRepository) {
       throw new Error('Ya existe un ejercicio con ese nombre.');
     }
 
-    const updated = await repository.update(id, { name: cleanName, restTime });
+    const updated = await repository.update(id, { name: cleanName, restTime, weightUnit });
     if (!updated) {
       throw new Error('El ejercicio no existe.');
     }

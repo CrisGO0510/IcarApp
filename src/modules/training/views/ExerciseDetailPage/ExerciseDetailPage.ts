@@ -3,7 +3,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useRoutineStore } from '../../stores/routine.store';
 import { useWorkoutStore } from '../../stores/workout.store';
+import { useProfileStore } from 'src/modules/profile/stores/profile.store';
 import { summarizePerformance } from '../../use-cases/exerciseHistory';
+import { resolveWeightUnit } from '../../use-cases/resolveWeightUnit';
 import { dayLabelEs } from 'src/core/utils/relativeTime';
 import type { ExerciseSet } from '../../types/training.types';
 
@@ -12,9 +14,11 @@ export function useExerciseDetailPage() {
   const router = useRouter();
   const routineStore = useRoutineStore();
   const workoutStore = useWorkoutStore();
+  const profileStore = useProfileStore();
 
   const { current, currentExercises } = storeToRefs(routineStore);
   const { history } = storeToRefs(workoutStore);
+  const { profile } = storeToRefs(profileStore);
 
   const routineId = computed(() => route.params.id as string);
   const pivotId = computed(() => route.params.pivotId as string);
@@ -24,6 +28,10 @@ export function useExerciseDetailPage() {
   );
   const exerciseName = computed(() => view.value?.exercise.name ?? '');
   const routineName = computed(() => current.value?.name ?? '');
+
+  const weightUnit = computed(() =>
+    resolveWeightUnit(view.value?.exercise, profile.value?.unitSystem),
+  );
 
   const performance = computed(() => summarizePerformance(history.value));
 
@@ -54,6 +62,7 @@ export function useExerciseDetailPage() {
   return {
     exerciseName,
     routineName,
+    weightUnit,
     performance,
     groups,
     openSet,

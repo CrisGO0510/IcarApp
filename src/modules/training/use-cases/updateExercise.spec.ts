@@ -37,7 +37,7 @@ describe('updateExercise', () => {
     const update = updateExercise(repository);
 
     // Act
-    const result = update('e1', '  ', null);
+    const result = update('e1', '  ', null, 'kg');
 
     // Assert
     await expect(result).rejects.toThrow('obligatorio');
@@ -52,7 +52,7 @@ describe('updateExercise', () => {
     const update = updateExercise(repository);
 
     // Act
-    const result = update('e2', 'press', null);
+    const result = update('e2', 'press', null, 'kg');
 
     // Assert
     await expect(result).rejects.toThrow('Ya existe');
@@ -64,11 +64,12 @@ describe('updateExercise', () => {
     const update = updateExercise(repository);
 
     // Act
-    const updated = await update('e1', 'Press de Banca', 120);
+    const updated = await update('e1', 'Press de Banca', 120, 'lb');
 
     // Assert
     expect(updated.name).toBe('Press de Banca');
     expect(updated.restTime).toBe(120);
+    expect(updated.weightUnit).toBe('lb');
   });
 
   it('clears the rest time when null is passed', async () => {
@@ -77,7 +78,7 @@ describe('updateExercise', () => {
     const update = updateExercise(repository);
 
     // Act
-    const updated = await update('e1', 'Press', null);
+    const updated = await update('e1', 'Press', null, 'kg');
 
     // Assert
     expect(updated.restTime).toBeNull();

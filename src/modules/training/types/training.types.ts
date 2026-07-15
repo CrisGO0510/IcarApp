@@ -10,9 +10,13 @@ export interface Routine extends BaseEntity {
 
 // ── Exercise ─────────────────────────────────────────────────────────
 
+export const WEIGHT_UNITS = ['kg', 'lb'] as const;
+export type WeightUnit = (typeof WEIGHT_UNITS)[number];
+
 export interface Exercise extends BaseEntity {
   name: string;
   restTime?: number | null; // seconds; null/absent = use the profile default
+  weightUnit?: WeightUnit; // absent = use the profile's unit
 }
 
 // ── Routine ↔ Exercise (pivot) ───────────────────────────────────────

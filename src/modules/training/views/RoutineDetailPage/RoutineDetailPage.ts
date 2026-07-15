@@ -1,26 +1,29 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
-import { useQuasar } from 'quasar';
 import { useRoutineStore } from '../../stores/routine.store';
 import { useWorkoutStore } from '../../stores/workout.store';
+import { useRestTimerStore } from '../../stores/restTimer.store';
 import { useProfileStore } from 'src/modules/profile/stores/profile.store';
 import { relativeTimeEs, isWithinLast24h } from 'src/core/utils/relativeTime';
 import type { RoutineExerciseView } from '../../types/training.types';
+import { resolveWeightUnit } from '../../use-cases/resolveWeightUnit';
+import { useConfirmDialog } from 'src/composables/useConfirmDialog';
 
 const DEFAULT_REST_SECONDS = 90;
 
 export function useRoutineDetailPage() {
   const route = useRoute();
   const router = useRouter();
-  const $q = useQuasar();
   const routineStore = useRoutineStore();
   const workoutStore = useWorkoutStore();
+  const restTimerStore = useRestTimerStore();
   const profileStore = useProfileStore();
 
   const { current, currentExercises, currentInProgress } = storeToRefs(routineStore);
-  const { lastSets, restRemaining, restRunning } = storeToRefs(workoutStore);
+  const { lastSets } = storeToRefs(workoutStore);
   const { profile } = storeToRefs(profileStore);
+  const { confirmDestructive } = useConfirmDialog();
 
   const routineId = computed(() => route.params.id as string);
   const query = ref('');
@@ -37,10 +40,11 @@ export function useRoutineDetailPage() {
     );
   });
 
-  function captionFor(pivotId: string): string {
-    const last = lastSets.value[pivotId];
+  function captionFor(view: RoutineExerciseView): string {
+    const last = lastSets.value[view.pivotId];
     if (!last) return '';
-    return `${last.weight ?? 0} kg · ${last.reps ?? 0} reps`;
+    const unit = resolveWeightUnit(view.exercise, profile.value?.unitSystem);
+    return `${last.weight ?? 0} ${unit} · ${last.reps ?? 0} reps`;
   }
 
   function statusLabelFor(pivotId: string): string {
@@ -55,12 +59,9 @@ export function useRoutineDetailPage() {
 
   const activeExerciseName = computed(() => activeExercise.value?.exercise.name ?? '');
 
-  const restLabel = computed(() => {
-    const total = Math.max(restRemaining.value, 0);
-    const minutes = Math.floor(total / 60);
-    const seconds = total % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-  });
+  const activeWeightUnit = computed(() =>
+    resolveWeightUnit(activeExercise.value?.exercise, profile.value?.unitSystem),
+  );
 
   async function onSwipeSet(
     view: RoutineExerciseView,
@@ -74,14 +75,12 @@ export function useRoutineDetailPage() {
 
   function onSwipeDelete(view: RoutineExerciseView, details: { reset: () => void }): void {
     details.reset();
-    $q.dialog({
+    confirmDestructive({
       title: 'Eliminar ejercicio',
       message: `¿Quitar "${view.exercise.name}" de esta rutina?`,
-      cancel: { flat: true, noCaps: true, label: 'Cancelar' },
-      ok: { unelevated: true, noCaps: true, color: 'negative', label: 'Eliminar' },
-      dark: true,
-    }).onOk(() => {
-      void routineStore.removeExercise(view.pivotId);
+      onConfirm: () => {
+        void routineStore.removeExercise(view.pivotId);
+      },
     });
   }
 
@@ -91,7 +90,10 @@ export function useRoutineDetailPage() {
     await workoutStore.logExerciseSet(routineId.value, view.pivotId, payload);
     const restSeconds =
       view.exercise.restTime ?? profile.value?.defaultRestTime ?? DEFAULT_REST_SECONDS;
-    workoutStore.startRest(restSeconds);
+    await restTimerStore.startRest(restSeconds, {
+      notify: profile.value?.restNotificationsEnabled !== false,
+      vibrate: profile.value?.restVibrationEnabled !== false,
+    });
     showSetDialog.value = false;
   }
 
@@ -119,9 +121,8 @@ export function useRoutineDetailPage() {
     query,
     showSetDialog,
     activeExerciseName,
+    activeWeightUnit,
     activeDefaults,
-    restRunning,
-    restLabel,
     captionFor,
     statusLabelFor,
     statusColorFor,
@@ -129,7 +130,6 @@ export function useRoutineDetailPage() {
     onSwipeDelete,
     onSubmitSet,
     onOpenExercise,
-    stopRest: workoutStore.stopRest,
     goToEdit,
   };
 }
