@@ -19,6 +19,8 @@ env:
 jobs:
   build-apk:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_KEYSTORE_BASE64: ${{ secrets.RELEASE_KEYSTORE_BASE64 }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -38,7 +40,7 @@ jobs:
       - run: chmod +x android/gradlew
 
       - name: Build APK firmado (release)
-        if: ${{ secrets.RELEASE_KEYSTORE_BASE64 != '' }}
+        if: ${{ env.RELEASE_KEYSTORE_BASE64 != '' }}
         working-directory: android
         env:
           RELEASE_KEYSTORE_PATH: ${{ github.workspace }}/android/release.keystore
@@ -47,11 +49,11 @@ jobs:
           RELEASE_KEY_PASSWORD: ${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
           APP_VERSION_CODE: ${{ github.run_number }}
         run: |
-          echo "${{ secrets.RELEASE_KEYSTORE_BASE64 }}" | base64 -d > "$RELEASE_KEYSTORE_PATH"
+          echo "$RELEASE_KEYSTORE_BASE64" | base64 -d > "$RELEASE_KEYSTORE_PATH"
           ./gradlew assembleRelease
 
       - name: Build APK debug (sin secrets de firma)
-        if: ${{ secrets.RELEASE_KEYSTORE_BASE64 == '' }}
+        if: ${{ env.RELEASE_KEYSTORE_BASE64 == '' }}
         working-directory: android
         env:
           APP_VERSION_CODE: ${{ github.run_number }}
