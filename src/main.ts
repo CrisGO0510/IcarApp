@@ -1,6 +1,8 @@
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import { Quasar, Notify, Dialog } from 'quasar';
+import { Capacitor } from '@capacitor/core';
+import { registerSW } from 'virtual:pwa-register';
 
 import 'quasar/src/css/index.sass';
 import '@quasar/extras/material-icons/material-icons.css';
@@ -25,5 +27,9 @@ app.use(createPinia());
 app.use(router);
 
 configureHardwareBackButton();
+
+if (!Capacitor.isNativePlatform()) {
+  registerSW();
+}
 
 app.mount('#app');
