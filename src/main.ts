@@ -32,4 +32,9 @@ if (!Capacitor.isNativePlatform()) {
   registerSW();
 }
 
+if (import.meta.env.DEV) {
+  const { seedFromExampleBackup } = await import('./core/backup/devSeed');
+  await seedFromExampleBackup();
+}
+
 app.mount('#app');

@@ -17,6 +17,11 @@ function isDomainKey(key: string): boolean {
   return key.startsWith(KEY_PREFIX) && !EPHEMERAL_KEYS.includes(key);
 }
 
+export async function hasAnyDomainData(): Promise<boolean> {
+  const { keys } = await Preferences.keys();
+  return keys.some(isDomainKey);
+}
+
 export async function exportAllData(now: Date): Promise<string> {
   const { keys } = await Preferences.keys();
   const data: Record<string, string> = {};

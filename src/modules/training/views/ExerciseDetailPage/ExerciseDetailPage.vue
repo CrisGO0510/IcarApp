@@ -30,6 +30,17 @@
         </div>
       </q-card>
 
+      <q-btn
+        unelevated
+        color="primary"
+        size="lg"
+        no-caps
+        icon="add"
+        label="Añadir serie"
+        class="full-width"
+        @click="onAddSet"
+      />
+
       <template v-if="groups.length">
         <q-card v-for="group in groups" :key="group.label" flat class="app-card">
           <div class="row items-center justify-between q-mb-sm">
@@ -63,15 +74,36 @@
         Aún no has registrado series de este ejercicio.
       </div>
     </div>
+
+    <SetFormDialog
+      v-model="showSetDialog"
+      :exercise-name="exerciseName"
+      :weight-unit="weightUnit"
+      :default-reps="setDefaults.reps"
+      :default-weight="setDefaults.weight"
+      @submit="onSubmitSet"
+    />
   </q-page>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import SetFormDialog from '../../components/SetFormDialog/SetFormDialog.vue';
 import { useExerciseDetailPage } from './ExerciseDetailPage';
 
-const { exerciseName, routineName, weightUnit, performance, groups, openSet, goToEdit } =
-  useExerciseDetailPage();
+const {
+  exerciseName,
+  routineName,
+  weightUnit,
+  performance,
+  groups,
+  showSetDialog,
+  setDefaults,
+  openSet,
+  onAddSet,
+  onSubmitSet,
+  goToEdit,
+} = useExerciseDetailPage();
 
 function formatDelta(value: number | null, unit = ''): string {
   if (value == null || value === 0) return '';

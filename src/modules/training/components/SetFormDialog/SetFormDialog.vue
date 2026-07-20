@@ -23,7 +23,6 @@
               dense
               outlined
               min="0"
-              autofocus
               input-class="text-center"
               class="full-width"
             />

@@ -8,6 +8,7 @@ import { summarizePerformance } from '../../use-cases/exerciseHistory';
 import { resolveWeightUnit } from '../../use-cases/resolveWeightUnit';
 import { dayLabelEs } from 'src/core/utils/relativeTime';
 import type { ExerciseSet } from '../../types/training.types';
+import { useSetLogging } from '../../composables/useSetLogging';
 
 export function useExerciseDetailPage() {
   const route = useRoute();
@@ -19,6 +20,7 @@ export function useExerciseDetailPage() {
   const { current, currentExercises } = storeToRefs(routineStore);
   const { history } = storeToRefs(workoutStore);
   const { profile } = storeToRefs(profileStore);
+  const { showSetDialog, setDefaults, openSetDialog, logSetWithRest } = useSetLogging();
 
   const routineId = computed(() => route.params.id as string);
   const pivotId = computed(() => route.params.pivotId as string);
@@ -43,6 +45,15 @@ export function useExerciseDetailPage() {
     void router.push(`/entreno/series/${set.id}/editar`);
   }
 
+  async function onAddSet(): Promise<void> {
+    await openSetDialog(pivotId.value);
+  }
+
+  async function onSubmitSet(payload: { reps: number; weight: number }): Promise<void> {
+    await logSetWithRest(routineId.value, pivotId.value, view.value?.exercise, payload);
+    await workoutStore.loadHistory(pivotId.value);
+  }
+
   function goToEdit(): void {
     const exerciseId = view.value?.exercise.id;
     if (exerciseId) {
@@ -65,7 +76,11 @@ export function useExerciseDetailPage() {
     weightUnit,
     performance,
     groups,
+    showSetDialog,
+    setDefaults,
     openSet,
+    onAddSet,
+    onSubmitSet,
     goToEdit,
   };
 }

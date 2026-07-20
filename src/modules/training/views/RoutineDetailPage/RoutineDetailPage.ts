@@ -3,34 +3,30 @@ import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useRoutineStore } from '../../stores/routine.store';
 import { useWorkoutStore } from '../../stores/workout.store';
-import { useRestTimerStore } from '../../stores/restTimer.store';
 import { useProfileStore } from 'src/modules/profile/stores/profile.store';
 import { relativeTimeEs, isWithinLast24h } from 'src/core/utils/relativeTime';
 import type { RoutineExerciseView } from '../../types/training.types';
 import { resolveWeightUnit } from '../../use-cases/resolveWeightUnit';
 import { useConfirmDialog } from 'src/composables/useConfirmDialog';
-
-const DEFAULT_REST_SECONDS = 90;
+import { useSetLogging } from '../../composables/useSetLogging';
 
 export function useRoutineDetailPage() {
   const route = useRoute();
   const router = useRouter();
   const routineStore = useRoutineStore();
   const workoutStore = useWorkoutStore();
-  const restTimerStore = useRestTimerStore();
   const profileStore = useProfileStore();
 
   const { current, currentExercises, currentInProgress } = storeToRefs(routineStore);
   const { lastSets } = storeToRefs(workoutStore);
   const { profile } = storeToRefs(profileStore);
   const { confirmDestructive } = useConfirmDialog();
+  const { showSetDialog, setDefaults, openSetDialog, logSetWithRest } = useSetLogging();
 
   const routineId = computed(() => route.params.id as string);
   const query = ref('');
 
-  const showSetDialog = ref(false);
   const activeExercise = ref<RoutineExerciseView | null>(null);
-  const activeDefaults = ref<{ reps: number; weight: number }>({ reps: 0, weight: 0 });
 
   const visibleExercises = computed(() => {
     const normalized = query.value.trim().toLowerCase();
@@ -69,8 +65,7 @@ export function useRoutineDetailPage() {
   ): Promise<void> {
     details.reset();
     activeExercise.value = view;
-    activeDefaults.value = await workoutStore.lastSetDefaults(view.pivotId);
-    showSetDialog.value = true;
+    await openSetDialog(view.pivotId);
   }
 
   function onSwipeDelete(view: RoutineExerciseView, details: { reset: () => void }): void {
@@ -87,14 +82,7 @@ export function useRoutineDetailPage() {
   async function onSubmitSet(payload: { reps: number; weight: number }): Promise<void> {
     const view = activeExercise.value;
     if (!view) return;
-    await workoutStore.logExerciseSet(routineId.value, view.pivotId, payload);
-    const restSeconds =
-      view.exercise.restTime ?? profile.value?.defaultRestTime ?? DEFAULT_REST_SECONDS;
-    await restTimerStore.startRest(restSeconds, {
-      notify: profile.value?.restNotificationsEnabled !== false,
-      vibrate: profile.value?.restVibrationEnabled !== false,
-    });
-    showSetDialog.value = false;
+    await logSetWithRest(routineId.value, view.pivotId, view.exercise, payload);
   }
 
   function goToEdit(): void {
@@ -122,7 +110,7 @@ export function useRoutineDetailPage() {
     showSetDialog,
     activeExerciseName,
     activeWeightUnit,
-    activeDefaults,
+    activeDefaults: setDefaults,
     captionFor,
     statusLabelFor,
     statusColorFor,
