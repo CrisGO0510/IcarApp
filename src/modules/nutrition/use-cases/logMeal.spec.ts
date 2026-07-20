@@ -58,6 +58,21 @@ describe('logMeal', () => {
     expect(created[0]!.calories).toBe(127);
   });
 
+  it('rounds macros to one decimal and calories to an integer before persisting', async () => {
+    // Arrange
+    const { repo, created } = fakeRepo();
+    const log = logMeal(repo);
+
+    // Act
+    await log(input({ protein: 25.456, carbohydrates: 10.04, fat: 3.35, calories: 199.6 }));
+
+    // Assert
+    expect(created[0]!.protein).toBe(25.5);
+    expect(created[0]!.carbohydrates).toBe(10);
+    expect(created[0]!.fat).toBe(3.4);
+    expect(created[0]!.calories).toBe(200);
+  });
+
   it('keeps the provided calories when given', async () => {
     // Arrange
     const { repo, created } = fakeRepo();

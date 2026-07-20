@@ -48,6 +48,28 @@ describe('createSavedMeal', () => {
     expect(writes[0]!.name).toBe('Arepa con queso');
   });
 
+  it('redondea los macros a un decimal y las calorías a entero', async () => {
+    // Arrange
+    const { repo, writes } = fakeRepo();
+    const create = createSavedMeal(repo);
+
+    // Act
+    await create(
+      input({
+        proteinPerBase: 8.456,
+        carbohydratesPerBase: 30.04,
+        fatPerBase: 7.35,
+        caloriesPerBase: 215.6,
+      }),
+    );
+
+    // Assert
+    expect(writes[0]!.proteinPerBase).toBe(8.5);
+    expect(writes[0]!.carbohydratesPerBase).toBe(30);
+    expect(writes[0]!.fatPerBase).toBe(7.4);
+    expect(writes[0]!.caloriesPerBase).toBe(216);
+  });
+
   it('rechaza un nombre vacío', async () => {
     // Arrange
     const { repo } = fakeRepo();

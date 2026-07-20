@@ -1,4 +1,5 @@
 import type { ActivityEntry, MacroGoal, MealEntry, NutritionDay } from '../types/nutrition.types';
+import { round1 } from './scaleMealFromReference';
 
 export function buildNutritionDay(
   date: string,
@@ -19,13 +20,13 @@ export function buildNutritionDay(
 
   return {
     date,
-    calories: { consumed: totals.calories, goal: goal?.calorieGoal ?? null },
-    protein: { consumed: totals.protein, goal: goal?.proteinGoal ?? null },
-    carbohydrates: { consumed: totals.carbohydrates, goal: goal?.carbohydrateGoal ?? null },
-    fat: { consumed: totals.fat, goal: goal?.fatGoal ?? null },
+    calories: { consumed: Math.round(totals.calories), goal: goal?.calorieGoal ?? null },
+    protein: { consumed: round1(totals.protein), goal: goal?.proteinGoal ?? null },
+    carbohydrates: { consumed: round1(totals.carbohydrates), goal: goal?.carbohydrateGoal ?? null },
+    fat: { consumed: round1(totals.fat), goal: goal?.fatGoal ?? null },
     entries,
-    burned,
-    remaining: goal ? goal.calorieGoal + burned - totals.calories : null,
+    burned: Math.round(burned),
+    remaining: goal ? Math.round(goal.calorieGoal + burned - totals.calories) : null,
     activities,
   };
 }

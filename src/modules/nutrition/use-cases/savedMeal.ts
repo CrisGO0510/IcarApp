@@ -1,6 +1,7 @@
 import type { SavedMealRepository } from '../repositories/nutrition.repository.port';
 import type { SavedMeal, SavedMealInput } from '../types/nutrition.types';
 import { computeCalories } from './computeCalories';
+import { round1 } from './scaleMealFromReference';
 
 type SavedMealData = Omit<SavedMeal, 'id' | 'createdAt' | 'updatedAt' | 'deletedAt'>;
 
@@ -17,15 +18,18 @@ function validate(input: SavedMealInput): void {
 }
 
 function toData(input: SavedMealInput): SavedMealData {
+  const proteinPerBase = round1(input.proteinPerBase);
+  const carbohydratesPerBase = round1(input.carbohydratesPerBase);
+  const fatPerBase = round1(input.fatPerBase);
   return {
     name: input.name.trim(),
-    proteinPerBase: input.proteinPerBase,
-    carbohydratesPerBase: input.carbohydratesPerBase,
-    fatPerBase: input.fatPerBase,
+    proteinPerBase,
+    carbohydratesPerBase,
+    fatPerBase,
     caloriesPerBase:
       input.caloriesPerBase !== null && input.caloriesPerBase > 0
-        ? input.caloriesPerBase
-        : computeCalories(input.proteinPerBase, input.carbohydratesPerBase, input.fatPerBase),
+        ? Math.round(input.caloriesPerBase)
+        : computeCalories(proteinPerBase, carbohydratesPerBase, fatPerBase),
     unitGrams: input.unitGrams,
   };
 }

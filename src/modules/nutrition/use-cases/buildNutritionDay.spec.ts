@@ -51,6 +51,23 @@ describe('buildNutritionDay', () => {
     expect(day.calories.goal).toBeNull();
   });
 
+  it('rounds macro totals to one decimal and calories to integers', () => {
+    // Arrange
+    const entries = [
+      entry({ calories: 100.4, protein: 10.15, carbohydrates: 0.1, fat: 0.1 }),
+      entry({ calories: 100.4, protein: 10.15, carbohydrates: 0.2, fat: 0.25 }),
+    ];
+
+    // Act
+    const day = buildNutritionDay('2026-06-24', entries, null);
+
+    // Assert
+    expect(day.calories.consumed).toBe(201);
+    expect(day.protein.consumed).toBe(20.3);
+    expect(day.carbohydrates.consumed).toBe(0.3);
+    expect(day.fat.consumed).toBe(0.4);
+  });
+
   it('exposes goals when a macro goal is present', () => {
     // Arrange
     const goal = {

@@ -55,6 +55,18 @@ describe('logActivity', () => {
     expect(entries).toHaveLength(1);
   });
 
+  it('rounds burned calories to an integer', async () => {
+    // Arrange
+    const entries: ActivityEntry[] = [];
+    const log = logActivity(repoWith(entries));
+
+    // Act
+    const result = await log(makeInput({ caloriesBurned: 300.6 }));
+
+    // Assert
+    expect(result.caloriesBurned).toBe(301);
+  });
+
   it('rejects an empty type', async () => {
     // Arrange
     const log = logActivity(repoWith([]));

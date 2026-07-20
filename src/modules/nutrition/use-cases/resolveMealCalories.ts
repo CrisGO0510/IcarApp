@@ -6,5 +6,8 @@ export function resolveMealCalories(
   carbohydrates: number,
   fat: number,
 ): number {
-  return manual ?? computeCalories(protein, carbohydrates, fat);
+  if (manual !== null && manual !== undefined) {
+    return Math.round(manual);
+  }
+  return computeCalories(protein, carbohydrates, fat);
 }

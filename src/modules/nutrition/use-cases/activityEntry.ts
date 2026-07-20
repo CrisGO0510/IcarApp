@@ -11,7 +11,7 @@ function validate(input: ActivityInput): ActivityInput {
   if (!type) throw new Error(EMPTY_TYPE_MESSAGE);
   if (input.caloriesBurned <= 0) throw new Error(INVALID_CALORIES_MESSAGE);
   if (input.durationMinutes <= 0) throw new Error(INVALID_DURATION_MESSAGE);
-  return { ...input, type };
+  return { ...input, type, caloriesBurned: Math.round(input.caloriesBurned) };
 }
 
 export function logActivity(repository: ActivityEntryRepository) {

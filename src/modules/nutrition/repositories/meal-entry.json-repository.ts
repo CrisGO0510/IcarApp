@@ -1,6 +1,7 @@
 import { JsonRepository } from 'src/core/repositories/json.repository';
 import type { MealEntry } from '../types/nutrition.types';
 import type { MealEntryRepository } from './nutrition.repository.port';
+import { round1 } from '../use-cases/scaleMealFromReference';
 
 export class MealEntryJsonRepository
   extends JsonRepository<MealEntry>
@@ -24,6 +25,10 @@ export class MealEntryJsonRepository
     return {
       ...base,
       loggedAt: new Date(obj.loggedAt as string),
+      protein: round1(base.protein),
+      carbohydrates: round1(base.carbohydrates),
+      fat: round1(base.fat),
+      calories: Math.round(base.calories),
     };
   }
 }
