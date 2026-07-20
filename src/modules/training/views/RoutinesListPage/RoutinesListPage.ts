@@ -1,15 +1,28 @@
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useRoutineStore } from '../../stores/routine.store';
-import type { RoutineSummary } from '../../types/training.types';
+import type { RoutineSortMode, RoutineSummary } from '../../types/training.types';
+import { ROUTINE_SORT_MODE } from '../../types/training.types';
 import { useConfirmDialog } from 'src/composables/useConfirmDialog';
+
+const SORT_OPTIONS: ReadonlyArray<{ label: string; value: RoutineSortMode }> = [
+  { label: 'Reciente', value: ROUTINE_SORT_MODE.RECENT },
+  { label: 'A-Z', value: ROUTINE_SORT_MODE.ALPHABETICAL },
+];
 
 export function useRoutinesListPage() {
   const router = useRouter();
   const store = useRoutineStore();
-  const { summaries } = storeToRefs(store);
+  const { sortedSummaries } = storeToRefs(store);
   const { confirmDestructive } = useConfirmDialog();
+
+  const sortMode = computed({
+    get: () => store.sortMode,
+    set: (mode: RoutineSortMode) => {
+      void store.setSortMode(mode);
+    },
+  });
 
   function goToLibrary(): void {
     void router.push('/entreno/ejercicios');
@@ -41,5 +54,14 @@ export function useRoutinesListPage() {
     void store.loadList();
   });
 
-  return { summaries, goToLibrary, goToNew, openRoutine, editRoutine, deleteRoutine };
+  return {
+    sortedSummaries,
+    sortMode,
+    sortOptions: SORT_OPTIONS,
+    goToLibrary,
+    goToNew,
+    openRoutine,
+    editRoutine,
+    deleteRoutine,
+  };
 }

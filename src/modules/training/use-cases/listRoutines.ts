@@ -21,9 +21,7 @@ export function listRoutines(
     const sets = await setRepository.findAll();
     const counts = countByRoutine(pivots);
 
-    return routines
-      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-      .map((routine) => ({
+    return routines.map((routine) => ({
         routine,
         exerciseCount: counts.get(routine.id) ?? 0,
         ...buildRoutineSessionMeta(routine.id, sessions, sets, now),

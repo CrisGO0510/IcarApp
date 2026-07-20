@@ -18,13 +18,16 @@
 
       <div>
         <div class="row items-center justify-between q-mb-sm">
-          <span class="text-caption text-uppercase text-muted">Tus rutinas</span>
-          <span class="text-caption text-primary">{{ summaries.length }} creadas</span>
+          <div class="row items-center q-gutter-x-sm">
+            <span class="text-caption text-uppercase text-muted">Tus rutinas</span>
+            <span class="text-caption text-primary">{{ sortedSummaries.length }} creadas</span>
+          </div>
+          <SegmentedToggle v-model="sortMode" :options="sortOptions" class="segmented--compact" />
         </div>
 
-        <div v-if="summaries.length" class="column q-gutter-y-sm">
+        <div v-if="sortedSummaries.length" class="column q-gutter-y-sm">
           <RoutineCard
-            v-for="summary in summaries"
+            v-for="summary in sortedSummaries"
             :key="summary.routine.id"
             :summary="summary"
             @open="openRoutine(summary)"
@@ -43,8 +46,17 @@
 <script setup lang="ts">
 import RoutineCard from '../../components/RoutineCard/RoutineCard.vue';
 import LibraryEntryCard from '../../components/LibraryEntryCard/LibraryEntryCard.vue';
+import SegmentedToggle from 'src/components/base/SegmentedToggle/SegmentedToggle.vue';
 import { useRoutinesListPage } from './RoutinesListPage';
 
-const { summaries, goToLibrary, goToNew, openRoutine, editRoutine, deleteRoutine } =
-  useRoutinesListPage();
+const {
+  sortedSummaries,
+  sortMode,
+  sortOptions,
+  goToLibrary,
+  goToNew,
+  openRoutine,
+  editRoutine,
+  deleteRoutine,
+} = useRoutinesListPage();
 </script>

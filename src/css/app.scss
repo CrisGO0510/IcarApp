@@ -384,6 +384,10 @@
 .segmented__option--active {
   color: $text-strong;
 }
+.segmented--compact .segmented__option {
+  padding: $space-1 $space-3;
+  font-size: 12px;
+}
 
 .app-header {
   background: $surface;

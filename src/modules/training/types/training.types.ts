@@ -38,6 +38,15 @@ export interface RoutineExerciseView {
   orderIndex: number;
 }
 
+export const ROUTINE_SORT_MODE = {
+  RECENT: 'recent',
+  ALPHABETICAL: 'alphabetical',
+} as const;
+
+export type RoutineSortMode = (typeof ROUTINE_SORT_MODE)[keyof typeof ROUTINE_SORT_MODE];
+
+export const ROUTINE_SORT_MODES = Object.values(ROUTINE_SORT_MODE);
+
 export interface RoutineSummary {
   routine: Routine;
   exerciseCount: number;
