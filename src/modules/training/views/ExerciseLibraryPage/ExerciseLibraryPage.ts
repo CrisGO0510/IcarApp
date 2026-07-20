@@ -3,6 +3,7 @@ import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useExerciseStore } from '../../stores/exercise.store';
+import { useSwipeSides } from 'src/composables/useSwipeSides';
 import type { ExerciseSort } from '../../use-cases/exerciseQuery';
 
 const SORT_OPTIONS: { value: ExerciseSort; label: string }[] = [
@@ -15,6 +16,7 @@ export function useExerciseLibraryPage() {
   const router = useRouter();
   const store = useExerciseStore();
   const { visibleExercises, sort } = storeToRefs(store);
+  const { singleDeleteSide } = useSwipeSides();
 
   const showDialog = ref(false);
 
@@ -58,6 +60,7 @@ export function useExerciseLibraryPage() {
   return {
     visibleExercises,
     sort,
+    singleDeleteSide,
     searchModel,
     showDialog,
     sortOptions: SORT_OPTIONS,

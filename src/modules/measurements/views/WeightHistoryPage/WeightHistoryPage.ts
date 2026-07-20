@@ -6,6 +6,7 @@ import type { BodyWeightLog } from '../../types/measurements.types';
 import { dayLabelEs } from 'src/core/utils/relativeTime';
 import { parseDateKey, todayKey } from 'src/core/utils/dateKey';
 import { useConfirmDialog } from 'src/composables/useConfirmDialog';
+import { useSwipeSides } from 'src/composables/useSwipeSides';
 
 const NEW_ENTRY_TITLE = 'Registrar peso';
 const EDIT_ENTRY_TITLE = 'Editar peso';
@@ -15,6 +16,7 @@ export function useWeightHistoryPage() {
   const store = useMeasurementsStore();
   const { logs, latest } = storeToRefs(store);
   const { confirmDestructive } = useConfirmDialog();
+  const { singleDeleteSide } = useSwipeSides();
 
   const showDialog = ref(false);
   const editing = ref<BodyWeightLog | null>(null);
@@ -81,6 +83,7 @@ export function useWeightHistoryPage() {
   return {
     entries,
     showDialog,
+    singleDeleteSide,
     dialogTitle,
     dialogWeight,
     dayLabel,

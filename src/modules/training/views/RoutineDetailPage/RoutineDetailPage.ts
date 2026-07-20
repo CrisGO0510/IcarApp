@@ -8,6 +8,7 @@ import { relativeTimeEs, isWithinLast24h } from 'src/core/utils/relativeTime';
 import type { RoutineExerciseView } from '../../types/training.types';
 import { resolveWeightUnit } from '../../use-cases/resolveWeightUnit';
 import { useConfirmDialog } from 'src/composables/useConfirmDialog';
+import { useSwipeSides, SWIPE_SIDES } from 'src/composables/useSwipeSides';
 import { useSetLogging } from '../../composables/useSetLogging';
 
 export function useRoutineDetailPage() {
@@ -22,6 +23,27 @@ export function useRoutineDetailPage() {
   const { profile } = storeToRefs(profileStore);
   const { confirmDestructive } = useConfirmDialog();
   const { showSetDialog, setDefaults, openSetDialog, logSetWithRest } = useSetLogging();
+  const { primarySide, deleteSide } = useSwipeSides();
+
+  const slideLeftColor = computed(() =>
+    primarySide.value === SWIPE_SIDES.LEFT ? 'positive' : 'negative',
+  );
+  const slideRightColor = computed(() =>
+    primarySide.value === SWIPE_SIDES.LEFT ? 'negative' : 'positive',
+  );
+
+  function swipeHandlersFor(
+    view: RoutineExerciseView,
+  ): Record<string, (details: { reset: () => void }) => void> {
+    return {
+      [primarySide.value]: (details) => {
+        void onSwipeSet(view, details);
+      },
+      [deleteSide.value]: (details) => {
+        onSwipeDelete(view, details);
+      },
+    };
+  }
 
   const routineId = computed(() => route.params.id as string);
   const query = ref('');
@@ -114,8 +136,11 @@ export function useRoutineDetailPage() {
     captionFor,
     statusLabelFor,
     statusColorFor,
-    onSwipeSet,
-    onSwipeDelete,
+    primarySide,
+    deleteSide,
+    slideLeftColor,
+    slideRightColor,
+    swipeHandlersFor,
     onSubmitSet,
     onOpenExercise,
     goToEdit,

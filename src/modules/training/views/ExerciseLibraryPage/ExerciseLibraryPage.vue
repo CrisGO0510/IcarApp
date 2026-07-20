@@ -49,10 +49,11 @@
           v-for="exercise in visibleExercises"
           :key="exercise.id"
           left-color="negative"
+          right-color="negative"
           class="exercise-slide"
-          @left="onDelete(exercise.id)"
+          v-on="{ [singleDeleteSide]: () => onDelete(exercise.id) }"
         >
-          <template #left>
+          <template #[singleDeleteSide]>
             <div class="row items-center q-gutter-x-sm">
               <q-icon name="delete" />
               <span>Eliminar</span>
@@ -78,6 +79,7 @@ import { useExerciseLibraryPage } from './ExerciseLibraryPage';
 const {
   visibleExercises,
   sort,
+  singleDeleteSide,
   searchModel,
   showDialog,
   sortOptions,

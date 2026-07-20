@@ -17,10 +17,11 @@
           v-for="entry in entries"
           :key="entry.id"
           left-color="negative"
+          right-color="negative"
           class="weight-slide"
-          @left="onDelete(entry)"
+          v-on="{ [singleDeleteSide]: () => onDelete(entry) }"
         >
-          <template #left>
+          <template #[singleDeleteSide]>
             <div class="row items-center q-gutter-x-sm">
               <q-icon name="delete" />
               <span>Eliminar</span>
@@ -59,6 +60,7 @@ import { useWeightHistoryPage } from './WeightHistoryPage';
 const {
   entries,
   showDialog,
+  singleDeleteSide,
   dialogTitle,
   dialogWeight,
   dayLabel,

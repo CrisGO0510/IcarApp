@@ -34,6 +34,15 @@
         />
       </div>
 
+      <div>
+        <FieldLabel>GESTOS</FieldLabel>
+        <q-toggle
+          v-model="invertSwipes"
+          label="Invertir dirección de los deslizamientos"
+          color="primary"
+        />
+      </div>
+
       <UnitSystemToggle v-model="form.unitSystem" />
 
       <div class="row q-col-gutter-sm">
@@ -148,6 +157,7 @@ const {
   restTime,
   restNotifications,
   restVibration,
+  invertSwipes,
   submitted,
   saving,
   transferring,

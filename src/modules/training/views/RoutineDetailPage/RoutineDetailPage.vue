@@ -41,19 +41,18 @@
         <q-slide-item
           v-for="view in visibleExercises"
           :key="view.pivotId"
-          left-color="positive"
-          right-color="negative"
+          :left-color="slideLeftColor"
+          :right-color="slideRightColor"
           class="exercise-slide"
-          @left="onSwipeSet(view, $event)"
-          @right="onSwipeDelete(view, $event)"
+          v-on="swipeHandlersFor(view)"
         >
-          <template #left>
+          <template #[primarySide]>
             <div class="row items-center q-gutter-x-sm">
               <q-icon name="check" />
               <span>Serie</span>
             </div>
           </template>
-          <template #right>
+          <template #[deleteSide]>
             <div class="row items-center q-gutter-x-sm">
               <q-icon name="delete" />
               <span>Eliminar</span>
@@ -101,8 +100,11 @@ const {
   captionFor,
   statusLabelFor,
   statusColorFor,
-  onSwipeSet,
-  onSwipeDelete,
+  primarySide,
+  deleteSide,
+  slideLeftColor,
+  slideRightColor,
+  swipeHandlersFor,
   onSubmitSet,
   onOpenExercise,
   goToEdit,

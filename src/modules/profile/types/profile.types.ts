@@ -28,6 +28,7 @@ export interface UserProfile extends BaseEntity {
   sex?: Sex;
   restNotificationsEnabled?: boolean; // avisar al terminar el descanso (default true)
   restVibrationEnabled?: boolean; // vibrar al terminar el descanso (default true)
+  invertSwipeActions?: boolean; // invertir dirección de los swipes (default false)
 }
 
 export interface OnboardingForm {

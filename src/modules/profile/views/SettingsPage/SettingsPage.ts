@@ -34,6 +34,7 @@ export function useSettingsPage() {
   const restTime = ref<number | null>(90);
   const restNotifications = ref(true);
   const restVibration = ref(true);
+  const invertSwipes = ref(false);
   const saving = ref(false);
 
   const weightSuffix = computed(() => (form.value.unitSystem === 'metric' ? 'kg' : 'lbs'));
@@ -64,6 +65,7 @@ export function useSettingsPage() {
         height: form.value.height,
         restNotificationsEnabled: restNotifications.value,
         restVibrationEnabled: restVibration.value,
+        invertSwipeActions: invertSwipes.value,
         ...(form.value.birthDate ? { birthDate: form.value.birthDate } : {}),
         ...(form.value.sex ? { sex: form.value.sex } : {}),
       });
@@ -130,6 +132,7 @@ export function useSettingsPage() {
       restTime.value = profile.defaultRestTime;
       restNotifications.value = profile.restNotificationsEnabled !== false;
       restVibration.value = profile.restVibrationEnabled !== false;
+      invertSwipes.value = profile.invertSwipeActions === true;
     }
   });
 
@@ -138,6 +141,7 @@ export function useSettingsPage() {
     restTime,
     restNotifications,
     restVibration,
+    invertSwipes,
     submitted,
     saving,
     transferring,
