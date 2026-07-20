@@ -352,7 +352,9 @@
 // ── Toggle segmentado con indicador deslizante ─────────
 .segmented {
   position: relative;
-  display: flex;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   padding: 4px;
   background: $dark;
   border-radius: $radius-pill;
@@ -371,7 +373,6 @@
 .segmented__option {
   position: relative;
   z-index: 1;
-  flex: 1;
   padding: $space-3 0;
   border: none;
   background: transparent;
