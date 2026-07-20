@@ -74,6 +74,23 @@ const routes: RouteRecordRaw[] = [
         meta: { title: 'Ajustar calorías y macros', back: true },
       },
       {
+        path: 'nutricion/mis-comidas',
+        component: () => import('src/modules/nutrition/views/SavedMealsPage/SavedMealsPage.vue'),
+        meta: { title: 'Mis comidas', back: true },
+      },
+      {
+        path: 'nutricion/mis-comidas/nueva',
+        component: () =>
+          import('src/modules/nutrition/views/SavedMealFormPage/SavedMealFormPage.vue'),
+        meta: { title: 'Nueva comida guardada', back: true },
+      },
+      {
+        path: 'nutricion/mis-comidas/:id/editar',
+        component: () =>
+          import('src/modules/nutrition/views/SavedMealFormPage/SavedMealFormPage.vue'),
+        meta: { title: 'Editar comida guardada', back: true },
+      },
+      {
         path: 'nutricion/comida/nueva',
         component: () => import('src/modules/nutrition/views/MealFormPage/MealFormPage.vue'),
         meta: { title: 'Agregar comida', back: true },
@@ -94,6 +111,12 @@ const routes: RouteRecordRaw[] = [
         component: () =>
           import('src/modules/nutrition/views/ActivityFormPage/ActivityFormPage.vue'),
         meta: { title: 'Editar actividad', back: true },
+      },
+      {
+        path: 'pesos',
+        component: () =>
+          import('src/modules/measurements/views/WeightHistoryPage/WeightHistoryPage.vue'),
+        meta: { title: 'Mis pesos', back: true },
       },
       {
         path: 'progreso',

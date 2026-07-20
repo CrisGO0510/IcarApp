@@ -301,7 +301,8 @@
   color: $primary;
 }
 
-.exercise-slide {
+.exercise-slide,
+.weight-slide {
   border-radius: $border-radius;
   overflow: hidden;
 }
@@ -474,4 +475,51 @@ input[type='number'] {
 }
 .error-subtitle {
   opacity: 0.4;
+}
+
+// ── Macro chips ──────────────────────────────────────────
+.macro-chip {
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+
+  &--kcal {
+    background: rgba($primary, 0.15);
+    color: $primary;
+  }
+  &--protein {
+    background: rgba($negative, 0.15);
+    color: $negative;
+  }
+  &--carbs {
+    background: rgba($warning, 0.15);
+    color: $warning;
+  }
+  &--fat {
+    background: rgba($info, 0.15);
+    color: $info;
+  }
+}
+
+// ── Saved meal picker / quick log ─────────────────────────
+.toolbar-menu {
+  min-width: 220px;
+}
+
+.saved-meal-sheet {
+  border-radius: 16px 16px 0 0;
+  padding: 16px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+
+  &__list {
+    overflow-y: auto;
+  }
+}
+
+.quick-log-card {
+  padding: 16px;
+  min-width: 280px;
 }

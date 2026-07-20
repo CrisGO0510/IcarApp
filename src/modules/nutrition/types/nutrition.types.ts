@@ -111,18 +111,40 @@ export interface NutritionDay {
   activities: ActivityEntry[];
 }
 
-// ── Food (reusable catalog) ──────────────────────────────────────────
+// ── Saved Meal ───────────────────────────────────────────────────────
 
-export interface Food extends BaseEntity {
+export const SAVED_MEAL_BASE_GRAMS = 100;
+
+export const SAVED_MEALS_PATH = '/nutricion/mis-comidas';
+export const NEW_SAVED_MEAL_PATH = `${SAVED_MEALS_PATH}/nueva`;
+export const MACRO_GOAL_PATH = '/nutricion/macros';
+
+export const QUANTITY_MODE = {
+  GRAMS: MASS_UNIT,
+  UNITS: 'unidades',
+} as const;
+export type QuantityMode = (typeof QUANTITY_MODE)[keyof typeof QUANTITY_MODE];
+
+export interface SavedMeal extends BaseEntity {
   name: string;
-  brand?: string;
-  barcode?: string;
-  servingSize: number;
-  servingUnit: string;
-  caloriesPerServing: number;
-  proteinPerServing: number;
-  carbohydratesPerServing: number;
-  fatPerServing: number;
-  isCustom: boolean;
-  isFavorite: boolean;
+  caloriesPerBase: number;
+  proteinPerBase: number;
+  carbohydratesPerBase: number;
+  fatPerBase: number;
+  unitGrams: number | null;
+}
+
+export interface SavedMealInput {
+  name: string;
+  caloriesPerBase: number | null;
+  proteinPerBase: number;
+  carbohydratesPerBase: number;
+  fatPerBase: number;
+  unitGrams: number | null;
+}
+
+export interface SavedMealLogRequest {
+  mode: QuantityMode;
+  amount: number;
+  date: string;
 }

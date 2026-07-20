@@ -1,7 +1,7 @@
 <template>
   <q-dialog v-model="open">
     <q-card class="app-card form-dialog form-dialog--narrow">
-      <div class="text-h6 text-weight-bold q-mb-md">Registrar peso</div>
+      <div class="text-h6 text-weight-bold q-mb-md">{{ title }}</div>
       <div class="text-caption text-uppercase text-muted q-mb-xs">Peso (kg)</div>
       <q-input
         v-model.number="weightKg"
@@ -14,7 +14,12 @@
         suffix="kg"
       />
       <div class="row justify-end q-gutter-sm q-mt-lg">
-        <ActionButton :kind="ACTION_KIND.CANCEL" label="Cancelar" :block="false" @click="open = false" />
+        <ActionButton
+          :kind="ACTION_KIND.CANCEL"
+          label="Cancelar"
+          :block="false"
+          @click="open = false"
+        />
         <q-btn unelevated color="primary" no-caps label="Guardar" @click="submit" />
       </div>
     </q-card>
@@ -28,7 +33,9 @@ import { ACTION_KIND } from 'src/components/base/ActionButton/ActionButton';
 
 const open = defineModel<boolean>({ required: true });
 
-const props = defineProps<{ current: number | null }>();
+const props = withDefaults(defineProps<{ current: number | null; title?: string }>(), {
+  title: 'Registrar peso',
+});
 
 const emit = defineEmits<{ submit: [weightKg: number] }>();
 

@@ -4,7 +4,9 @@ import { useQuasar } from 'quasar';
 import { useNutritionStore } from '../../stores/nutrition.store';
 import { DATE_QUERY_PARAM, MASS_UNIT, type MealInput } from '../../types/nutrition.types';
 import { scaleMealFromReference } from '../../use-cases/scaleMealFromReference';
+import { normalizeSavedMeal } from '../../use-cases/normalizeSavedMeal';
 import { useConfirmDialog } from 'src/composables/useConfirmDialog';
+import { useSavedMealStore } from '../../stores/savedMeal.store';
 
 const MEAL_NOT_FOUND_MESSAGE = 'No se encontró la comida.';
 
@@ -21,6 +23,7 @@ export function useMealFormPage() {
   const router = useRouter();
   const $q = useQuasar();
   const store = useNutritionStore();
+  const savedMealStore = useSavedMealStore();
   const { confirmDestructive } = useConfirmDialog();
 
   const mealId = computed(() => (route.params.id as string | undefined) ?? null);
@@ -41,6 +44,12 @@ export function useMealFormPage() {
   const baseCarbohydrates = ref<number>(0);
   const baseFat = ref<number>(0);
   const baseCalories = ref<number>(0);
+
+  const saveToLibrary = ref(false);
+
+  const canSaveToLibrary = computed(() =>
+    mode.value === MEAL_MODE.CALCULATE ? (base.value || 0) > 0 : (quantity.value || 0) > 0,
+  );
 
   const calculated = computed(() =>
     scaleMealFromReference(
@@ -85,13 +94,45 @@ export function useMealFormPage() {
       } else {
         await store.log(input);
       }
-      await router.push('/nutricion');
     } catch (error) {
       $q.notify({
         type: 'negative',
         message: error instanceof Error ? error.message : 'No se pudo guardar la comida.',
       });
+      return;
     }
+
+    if (saveToLibrary.value && canSaveToLibrary.value) {
+      try {
+        const normalized =
+          mode.value === MEAL_MODE.CALCULATE
+            ? normalizeSavedMeal(
+                {
+                  protein: baseProtein.value || 0,
+                  carbohydrates: baseCarbohydrates.value || 0,
+                  fat: baseFat.value || 0,
+                  calories: baseCalories.value || 0,
+                },
+                base.value || 0,
+              )
+            : normalizeSavedMeal(macros, quantity.value || 0);
+        await savedMealStore.create({
+          name: foodName.value,
+          proteinPerBase: normalized.proteinPerBase,
+          carbohydratesPerBase: normalized.carbohydratesPerBase,
+          fatPerBase: normalized.fatPerBase,
+          caloriesPerBase: normalized.caloriesPerBase > 0 ? normalized.caloriesPerBase : null,
+          unitGrams: null,
+        });
+      } catch {
+        $q.notify({
+          type: 'warning',
+          message: 'La comida se registró, pero no se pudo guardar en tu biblioteca.',
+        });
+      }
+    }
+
+    await router.push('/nutricion');
   }
 
   function remove(): void {
@@ -153,6 +194,8 @@ export function useMealFormPage() {
     baseFat,
     baseCalories,
     calculated,
+    saveToLibrary,
+    canSaveToLibrary,
     save,
     remove,
     cancel,

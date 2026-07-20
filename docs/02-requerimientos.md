@@ -69,6 +69,16 @@ No existen roles adicionales en el MVP.
 - Como usuario quiero definir calorías y macros por comida
 - Como usuario quiero editar o eliminar comidas registradas
 
+### Comidas Guardadas
+- Como usuario quiero guardar comidas para reutilizarlas sin re-ingresar sus macros
+- Como usuario quiero registrar una comida guardada indicando solo la cantidad
+- Como usuario quiero ingresar la cantidad en gramos o en unidades (definiendo cuánto pesa una unidad)
+- Como usuario quiero gestionar (crear, editar, eliminar) mis comidas guardadas
+
+> Nota (2026-07-20): esta capacidad se introduce por **experiencia de usuario** — reducir los
+> pasos del registro diario repetido, alineada con el requerimiento de Simplicidad de Uso.
+> No implica un catálogo precargado: solo comidas creadas por el propio usuario (ver ADR-009).
+
 ### Cálculo Diario
 - Como usuario quiero ver el total diario de calorías
 - Como usuario quiero ver el total diario de macronutrientes

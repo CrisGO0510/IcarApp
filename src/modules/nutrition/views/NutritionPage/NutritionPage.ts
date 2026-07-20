@@ -1,9 +1,10 @@
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useNutritionStore } from '../../stores/nutrition.store';
-import { DATE_QUERY_PARAM } from '../../types/nutrition.types';
-import type { ActivityEntry, MacroTotal, MealEntry } from '../../types/nutrition.types';
+import { DATE_QUERY_PARAM, MACRO_GOAL_PATH, SAVED_MEALS_PATH } from '../../types/nutrition.types';
+import type { ActivityEntry, MacroTotal, MealEntry, SavedMeal } from '../../types/nutrition.types';
+import { WEIGHT_HISTORY_PATH } from 'src/modules/measurements/types/measurements.types';
 import { dayLabelEs } from 'src/core/utils/relativeTime';
 import { parseDateKey, todayKey } from 'src/core/utils/dateKey';
 
@@ -53,7 +54,13 @@ export function useNutritionPage() {
   }
 
   function goToEdit(): void {
-    void router.push('/nutricion/macros');
+    void router.push(MACRO_GOAL_PATH);
+  }
+  function goToSavedMeals(): void {
+    void router.push(SAVED_MEALS_PATH);
+  }
+  function goToWeights(): void {
+    void router.push(WEIGHT_HISTORY_PATH);
   }
   function addMeal(): void {
     void router.push(`/nutricion/comida/nueva?${DATE_QUERY_PARAM}=${date.value}`);
@@ -66,6 +73,19 @@ export function useNutritionPage() {
   }
   function openActivity(activity: ActivityEntry): void {
     void router.push(`/nutricion/actividad/${activity.id}/editar`);
+  }
+
+  const showPicker = ref(false);
+  const showQuickLog = ref(false);
+  const pickedMeal = ref<SavedMeal | null>(null);
+
+  function openPicker(): void {
+    showPicker.value = true;
+  }
+
+  function onPickSavedMeal(meal: SavedMeal): void {
+    pickedMeal.value = meal;
+    showQuickLog.value = true;
   }
 
   onMounted(() => {
@@ -82,6 +102,8 @@ export function useNutritionPage() {
     macroRatio,
     macroGoalSuffix,
     goToEdit,
+    goToSavedMeals,
+    goToWeights,
     addMeal,
     openMeal,
     addActivity,
@@ -92,5 +114,10 @@ export function useNutritionPage() {
     isToday,
     previousDay,
     nextDay,
+    showPicker,
+    showQuickLog,
+    pickedMeal,
+    openPicker,
+    onPickSavedMeal,
   };
 }

@@ -14,7 +14,14 @@
           <q-icon name="straighten" size="18px" class="text-muted" />
           <span class="text-micro text-uppercase text-muted">Cantidad que comiste</span>
         </div>
-        <q-input v-model.number="quantity" type="number" min="0" dense outlined :suffix="MASS_UNIT" />
+        <q-input
+          v-model.number="quantity"
+          type="number"
+          min="0"
+          dense
+          outlined
+          :suffix="MASS_UNIT"
+        />
       </div>
 
       <q-tabs
@@ -46,7 +53,9 @@
                   <div class="surface-card">
                     <div class="row items-center no-wrap q-gutter-xs q-mb-xs">
                       <q-icon name="set_meal" color="negative" size="16px" />
-                      <span class="text-micro text-uppercase text-muted col ellipsis">Proteína</span>
+                      <span class="text-micro text-uppercase text-muted col ellipsis"
+                        >Proteína</span
+                      >
                     </div>
                     <q-input
                       v-model.number="protein"
@@ -144,7 +153,9 @@
                   <div class="surface-card surface-card--nested">
                     <div class="row items-center no-wrap q-gutter-xs q-mb-xs">
                       <q-icon name="set_meal" color="negative" size="16px" />
-                      <span class="text-micro text-uppercase text-muted col ellipsis">Proteína</span>
+                      <span class="text-micro text-uppercase text-muted col ellipsis"
+                        >Proteína</span
+                      >
                     </div>
                     <q-input
                       v-model.number="baseProtein"
@@ -236,6 +247,17 @@
         <q-input v-model="notes" type="textarea" autogrow dense outlined aria-label="Notas" />
       </div>
 
+      <div>
+        <q-checkbox
+          v-model="saveToLibrary"
+          :disable="!canSaveToLibrary"
+          label="Guardar también en mis comidas"
+        />
+        <div v-if="!canSaveToLibrary" class="text-small text-faint">
+          Ingresa la cantidad en gramos para poder guardarla en tu biblioteca.
+        </div>
+      </div>
+
       <div class="column q-gutter-y-sm">
         <q-btn
           unelevated
@@ -280,6 +302,8 @@ const {
   baseFat,
   baseCalories,
   calculated,
+  saveToLibrary,
+  canSaveToLibrary,
   save,
   remove,
   cancel,

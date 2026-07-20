@@ -17,7 +17,7 @@ export interface ScaledMacros {
 
 const DECIMAL_FACTOR = 10;
 
-function round1(value: number): number {
+export function round1(value: number): number {
   return Math.round(value * DECIMAL_FACTOR) / DECIMAL_FACTOR;
 }
 

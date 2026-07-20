@@ -1,7 +1,30 @@
 <template>
   <q-page class="q-pa-md">
     <Teleport defer to="#toolbar-action">
-      <q-btn flat dense no-caps color="primary" label="Editar" @click="goToEdit" />
+      <q-btn flat dense round color="primary" icon="menu" aria-label="Menú de nutrición">
+        <q-menu>
+          <q-list dense class="toolbar-menu">
+            <q-item v-close-popup clickable @click="goToSavedMeals">
+              <q-item-section avatar>
+                <q-icon name="bookmark" size="20px" />
+              </q-item-section>
+              <q-item-section>Mis comidas</q-item-section>
+            </q-item>
+            <q-item v-close-popup clickable @click="goToEdit">
+              <q-item-section avatar>
+                <q-icon name="local_fire_department" size="20px" />
+              </q-item-section>
+              <q-item-section>Editar gasto calórico diario</q-item-section>
+            </q-item>
+            <q-item v-close-popup clickable @click="goToWeights">
+              <q-item-section avatar>
+                <q-icon name="monitor_weight" size="20px" />
+              </q-item-section>
+              <q-item-section>Editar mis pesos</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-btn>
     </Teleport>
 
     <div class="column q-gutter-y-md page-content">
@@ -113,6 +136,15 @@
             class="full-width"
             @click="addMeal"
           />
+          <q-btn
+            outline
+            color="primary"
+            no-caps
+            icon="bookmark"
+            label="Desde mis comidas"
+            class="full-width"
+            @click="openPicker"
+          />
           <MealCard v-for="meal in meals" :key="meal.id" :meal="meal" @open="openMeal(meal)" />
           <div v-if="!meals.length" class="empty-box text-muted">
             Sin comidas registradas este día
@@ -146,12 +178,17 @@
         </div>
       </q-expansion-item>
     </div>
+
+    <SavedMealPickerSheet v-model="showPicker" @select="onPickSavedMeal" />
+    <SavedMealQuickLogDialog v-if="pickedMeal" v-model="showQuickLog" :meal="pickedMeal" />
   </q-page>
 </template>
 
 <script setup lang="ts">
 import MealCard from '../../components/MealCard/MealCard.vue';
 import ActivityCard from '../../components/ActivityCard/ActivityCard.vue';
+import SavedMealPickerSheet from '../../components/SavedMealPickerSheet/SavedMealPickerSheet.vue';
+import SavedMealQuickLogDialog from '../../components/SavedMealQuickLogDialog/SavedMealQuickLogDialog.vue';
 import { useNutritionPage } from './NutritionPage';
 
 const {
@@ -164,6 +201,8 @@ const {
   macroRatio,
   macroGoalSuffix,
   goToEdit,
+  goToSavedMeals,
+  goToWeights,
   addMeal,
   openMeal,
   addActivity,
@@ -174,5 +213,10 @@ const {
   isToday,
   previousDay,
   nextDay,
+  showPicker,
+  showQuickLog,
+  pickedMeal,
+  openPicker,
+  onPickSavedMeal,
 } = useNutritionPage();
 </script>

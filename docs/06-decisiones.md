@@ -262,6 +262,40 @@ Se reemplaza SQLite por un **adapter JSON sobre `@capacitor/preferences`**:
 
 ---
 
+## ADR-009 – Comidas guardadas del usuario (reversa parcial de "sin catálogo de alimentos")
+
+### Contexto
+
+El 2026-07-10 se decidió que no habría catálogo de alimentos: toda comida se ingresa
+manualmente con sus macros. En el uso real, el registro diario repite casi siempre las
+mismas comidas, y re-tipear macros cada vez contradice el requerimiento de Simplicidad
+de Uso.
+
+### Decisión
+
+Se introduce una biblioteca personal de **comidas guardadas** (`SavedMeal`): macros
+normalizados por 100 g y una equivalencia opcional de gramos por unidad, con registro
+rápido por gramos o por unidades. Se mantiene fuera de alcance el catálogo precargado,
+las marcas y los códigos de barras: solo existen comidas creadas por el propio usuario.
+
+### Justificación
+
+* Experiencia de usuario: el registro repetido pasa de re-tipear 4-5 valores a elegir
+  una comida y una cantidad.
+* La normalización por 100 g reusa el mismo mecanismo de escalado de la pestaña
+  "Calcular" (`scaleMealFromReference`), sin lógica nueva de conversión.
+* La entrada registrada (`MealEntry`) no cambia de forma: los totales del día, el
+  progreso y el backup quedan intactos.
+
+### Consecuencias
+
+* Nueva clave de persistencia `icarapp:saved_meals` (incluida automáticamente en el
+  backup por prefijo).
+* La decisión de 2026-07-10 queda acotada: sigue sin haber catálogo *precargado*, pero
+  sí reutilización de comidas propias.
+
+---
+
 ## Revisión de Decisiones
 
 Este documento podrá actualizarse cuando:
